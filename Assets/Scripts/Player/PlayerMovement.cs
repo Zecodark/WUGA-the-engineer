@@ -6,6 +6,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField]public float speed = 6f;
     [SerializeField]public float jumpHeight = 2f;
     [SerializeField]public float gravity = -9.81f;
+    [SerializeField] private Animator animator;
     [SerializeField]public float turnSmoothTime = .1f;
     public Transform cam;
 
@@ -26,14 +27,20 @@ public class PlayerMovement : MonoBehaviour
 
     public void Move(Vector2 input, Transform cam)
     {
+        animator.SetBool("IsGrounded", isGrounded);
         isGrounded = controller.isGrounded;
+
         if (isGrounded && velocity.y < 0)
         {
             velocity.y = -2f;
         }
+        
 
         Vector3 direction = new Vector3(input.x, 0f, input.y).normalized;
-        if (direction.magnitude >= 0.1f) 
+        animator.SetFloat("Speed", direction.magnitude, 0.1f, Time.deltaTime);
+
+        if (direction.magnitude >= 0.1f)
+        
         {
             float targetAngle = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg + cam.eulerAngles.y;
             float angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref turnSmoothVelocity, turnSmoothTime);
@@ -52,6 +59,7 @@ public void Jump()
     if(isGrounded)
     {
         velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
+        animator.SetTrigger("Jump");
     }
 }
 
