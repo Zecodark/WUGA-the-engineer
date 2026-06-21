@@ -58,6 +58,7 @@
     <Compile Include="Assets\Scripts\Items\ItemData.cs" />
     <Compile Include="Assets\Scripts\Quest\QuestGiver.cs" />
     <Compile Include="Assets\Scripts\Player\PlayerInput.cs" />
+    <Compile Include="Assets\Asset\vfx\Scripts\PortalRotate.cs" />
     <Compile Include="Assets\Scripts\UI\InteractionPromptUI.cs" />
     <Compile Include="Assets\Scripts\Player\PlayerMovement.cs" />
     <Compile Include="Assets\Scripts\Player\PlayerController.cs" />
