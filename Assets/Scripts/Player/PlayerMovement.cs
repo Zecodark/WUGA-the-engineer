@@ -13,6 +13,9 @@ public class PlayerMovement : MonoBehaviour
     private Vector3 velocity;
     private bool isGrounded;
     public float turnSmoothVelocity;
+    private int jumpCount = 0;
+    private int maxJumps = 2;
+    private bool isRolling = false;
 
     void Start()
     {
@@ -28,11 +31,18 @@ public class PlayerMovement : MonoBehaviour
     public void Move(Vector2 input, Transform cam)
     {
         animator.SetBool("IsGrounded", isGrounded);
+        animator.SetBool("IsRolling", isRolling);
         isGrounded = controller.isGrounded;
 
         if (isGrounded && velocity.y < 0)
         {
             velocity.y = -2f;
+
+            if(jumpCount > 0)
+            {
+                jumpCount = 0;
+                isRolling = false;
+            }
         }
         
 
@@ -56,10 +66,20 @@ public class PlayerMovement : MonoBehaviour
 
 public void Jump() 
 {
-    if(isGrounded)
+    if(jumpCount < maxJumps)
     {
         velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
-        animator.SetTrigger("Jump");
+        jumpCount++;
+
+        if(jumpCount == 2)
+        {
+            animator.SetTrigger("Roll");
+            isRolling = true;
+        }
+        else
+        {
+            animator.SetTrigger("Jump");
+        }
     }
 }
 

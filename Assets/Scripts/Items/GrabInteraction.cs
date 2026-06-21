@@ -11,6 +11,15 @@ public class GrabInteraction : MonoBehaviour
 
     void Update()
     {
+        if (BitCutSceneDirector.Instance != null &&
+            BitCutSceneDirector.Instance.IsCutsceneActive)
+        {
+            if (interactionPrompt != null)
+                interactionPrompt.SetActive(false);
+
+            return;
+        }
+
         if (isGrabbed) return;
 
         // Cek player dalam range
@@ -48,7 +57,18 @@ public class GrabInteraction : MonoBehaviour
         if (interactionPrompt != null)
         interactionPrompt.SetActive(false);
 
-        InventoryManager.Instance.AddItem(itemData);
-        Destroy(gameObject);
+        CarrySystem carrySystem = FindFirstObjectByType<CarrySystem>();
+        if (carrySystem != null)
+        {
+            carrySystem.CarryItem(gameObject);
+        }
+
+
     }
+
+    public ItemData GetItemData()
+    {
+        return itemData;
+    }
+
 }

@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3f7dbea39123ea846ae2349578084e0c, type: 3}
+  m_Name: Bit_FirstMeeting
+  m_EditorClassIdentifier: Assembly-CSharp::DialogueData
+  speakerName: Bit
+  lines:
+  - Halo! Aku Bit, robot pembantu kamu.
+  - Selamat datang di dunia digital!
+  - Aku dapat membantumu keluar dari dunia ini !
+  - ' Aku akan memberimu quest pertama.'
+  - Pertama - tama, Susunlah Komputer ini menjadi satu di atas meja !
+  choices: []
+  questToGive: {fileID: 11400000, guid: e2dfbd530fbe4ad418bf134b93f9c1f3, type: 2}

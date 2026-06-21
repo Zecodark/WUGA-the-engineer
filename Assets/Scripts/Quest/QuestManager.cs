@@ -23,6 +23,7 @@ public class QuestManager : MonoBehaviour
 
     public void AcceptQuest(QuestData quest)
     {
+        Debug.Log("[QuestManager] AcceptQuest called: " + quest.questName);
         activeQuest = quest;
         foreach (var obj in activeQuest.objectives)
         obj.currentAmount = 0;
@@ -39,6 +40,7 @@ public class QuestManager : MonoBehaviour
             {
                 obj.currentAmount = Mathf.Min(obj.currentAmount +
                 amount, obj.requiredAmount);
+                Debug.Log("[QuestManager] UpdateObjective: " + obj.description + " = " + obj.currentAmount + "/" + obj.requiredAmount);
                 OnObjectiveUpdated?.Invoke();
 
                 if (IsQuestComplete())
@@ -57,6 +59,7 @@ public class QuestManager : MonoBehaviour
 
     void CompleteQuest()
     {
+        Debug.Log("[QuestManager] CompleteQuest called: " + activeQuest.questName);
         completedQuests.Add(activeQuest);
         OnQuestCompleted?.Invoke(activeQuest);
 

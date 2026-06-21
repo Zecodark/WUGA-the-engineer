@@ -15,5 +15,5 @@ MonoBehaviour:
   itemId: power_cable
   itemName: Power Cable
   icon: {fileID: 0}
-  size: 0
+  size: 1
   description: 

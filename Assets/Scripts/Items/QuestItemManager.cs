@@ -28,5 +28,13 @@ public class QuestItemManager : MonoBehaviour
         }
     }
 
+    public void SetPreviewVisible(bool visible)
+    {
+        foreach (GameObject item in allItems)
+        {
+            if (item != null)
+                item.SetActive(visible);
+        }
+    }
 
 }

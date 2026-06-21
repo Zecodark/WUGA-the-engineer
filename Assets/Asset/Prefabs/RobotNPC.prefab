@@ -15,7 +15,6 @@ GameObject:
   - component: {fileID: 6529188935890800939}
   - component: {fileID: 2328179456598248911}
   - component: {fileID: 8329739305920074762}
-  - component: {fileID: 3485461217441327830}
   m_Layer: 0
   m_Name: RobotNPC
   m_TagString: Untagged
@@ -851,24 +850,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a3577d7b5234d7a4587457c538af59cd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RobotNPC
+  firstMeetingDialogue: {fileID: 0}
+  questInProgressDialogue: {fileID: 0}
+  questCompletedDialogue: {fileID: 0}
   hoverSpeed: 2
   interactRange: 3
-  availableQuests:
-  - {fileID: 11400000, guid: e2dfbd530fbe4ad418bf134b93f9c1f3, type: 2}
   promptUI: {fileID: 3318291358898961917}
---- !u!114 &3485461217441327830
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 628485026567919995}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 363cbb395a67a13479853fa61af47c1d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::QuestGiver
-  questMarker: {fileID: 0}
+  player: {fileID: 0}
+  rotationSpeed: 5
 --- !u!1 &1413553881015436394
 GameObject:
   m_ObjectHideFlags: 0
