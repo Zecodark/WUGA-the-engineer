@@ -52,6 +52,7 @@
     <Compile Include="Assets\Scripts\Items\GrabInteraction.cs" />
     <Compile Include="Assets\Asset\vfx\ExplosionVFXPlayer.cs" />
     <Compile Include="Assets\Scripts\OpeningScene\IntroVideoController.cs" />
+    <Compile Include="Assets\Scripts\Dialogue\dialogAwalScene.cs" />
     <Compile Include="Assets\Scripts\Quest\QuestData.cs" />
     <Compile Include="Assets\Scripts\Items\InventoryManager.cs" />
     <Compile Include="Assets\Scripts\UI\InventoryUI.cs" />
