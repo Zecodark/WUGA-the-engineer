@@ -11,6 +11,7 @@ public class DialogueSystem : MonoBehaviour
     private int currentLineIndex;
     private bool isDialogueActive;
     private bool externalSequenceActive;
+    private int startedFrame;
 
     public event Action OnDialogueStarted;
     public event Action OnDialogueEnded;
@@ -28,6 +29,17 @@ public class DialogueSystem : MonoBehaviour
         Instance = this;
     }
 
+    private void Update()
+    {
+        if (isDialogueActive && !externalSequenceActive)
+        {
+            if (Time.frameCount > startedFrame && (Input.GetKeyDown(KeyCode.E) || Input.GetKeyDown(KeyCode.Return)))
+            {
+                NextLine();
+            }
+        }
+    }
+
     public void StartDialogue(DialogueData dialogue, Vector3 npcPosition)
     {
         if (isDialogueActive || dialogue == null)
@@ -43,6 +55,7 @@ public class DialogueSystem : MonoBehaviour
         currentLineIndex = 0;
         isDialogueActive = true;
         externalSequenceActive = false;
+        startedFrame = Time.frameCount;
 
         dialogueUI.SetNPCPosition(npcPosition);
         dialogueUI.ShowDialogue(

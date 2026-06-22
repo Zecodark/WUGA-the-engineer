@@ -10,6 +10,7 @@ public class PlaceInteraction : MonoBehaviour
     [SerializeField] private InteractionPromptUI promptUI;
 
     private CarrySystem carrySystem;
+    private bool isPlacing;
 
     void Start()
     {
@@ -18,7 +19,7 @@ public class PlaceInteraction : MonoBehaviour
 
     void Update()
     {
-        if (carrySystem == null || !carrySystem.IsCarrying())
+        if (carrySystem == null || !carrySystem.IsCarrying() || isPlacing)
         {
             if(promptUI != null) promptUI.Hide();
             return;
@@ -29,13 +30,13 @@ public class PlaceInteraction : MonoBehaviour
         if(promptUI != null)
         {
             if(playerInRange)
-            promptUI.Show("Press G to Place");
+                promptUI.Show("Press E or G to Place");
             else
-            promptUI.Hide();
+                promptUI.Hide();
         }
 
-        if (playerInRange && Input.GetKeyDown(KeyCode.G))
-        PlaceItem();
+        if (playerInRange && (Input.GetKeyDown(KeyCode.G) || Input.GetKeyDown(KeyCode.E)))
+            PlaceItem();
     }
 
     bool CheckPlayerProximity()
@@ -50,33 +51,60 @@ public class PlaceInteraction : MonoBehaviour
 
     void PlaceItem()
     {
+        if (isPlacing || TableSocket == null)
+            return;
+
         GameObject currentItem = carrySystem.GetCurrentItem();
         if (currentItem == null) return;
 
         GrabInteraction currentGrab = currentItem.GetComponent<GrabInteraction>();
+        ItemData currentItemData =
+            currentGrab != null ? currentGrab.GetItemData() : null;
+
+        if (currentItemData == null)
+        {
+            Debug.LogWarning(
+                "[PlaceInteraction] Item yang dibawa tidak memiliki ItemData.",
+                currentItem
+            );
+            return;
+        }
+
         if (currentGrab != null &&
             Level2ProgressController.Instance != null &&
             !Level2ProgressController.Instance.CanInteractWith(
-                currentGrab.GetItemData()
+                currentItemData
             ))
         {
             return;
         }
 
-        int socketIndex = TableSocket.GetAvailableSocketIndex();
+        int socketIndex =
+            TableSocket.GetSocketIndexForItem(currentItemData);
+
         if (socketIndex == -1)
         {
-            Debug.Log("No Available sockets!");
+            Debug.Log(
+                $"Tidak ada socket meja untuk {currentItemData.itemName}.",
+                this
+            );
             return;
         }
 
-        // Mulai coroutine untuk smooth place
+        isPlacing = true;
         StartCoroutine(SmoothPlace(currentItem, socketIndex));
     }
     
     IEnumerator SmoothPlace(GameObject item, int socketIndex)
     {
         Transform socket = TableSocket.GetSocket(socketIndex);
+
+        if (socket == null)
+        {
+            isPlacing = false;
+            yield break;
+        }
+
         float duration = 0.3f;
         float elapsed = 0f;
 
@@ -104,15 +132,22 @@ public class PlaceInteraction : MonoBehaviour
         {
             ItemData placedItem = grab.GetItemData();
 
-            QuestManager.Instance.UpdateObjective(
-                ObjectiveType.Grab,
-                placedItem.itemId,
-                1
-            );
+            grab.MarkPlaced();
+
+            if (QuestManager.Instance != null)
+            {
+                QuestManager.Instance.UpdateObjective(
+                    ObjectiveType.Grab,
+                    placedItem.itemId,
+                    1
+                );
+            }
+
             OnItemPlaced?.Invoke(placedItem);
         }
 
-        Debug.Log("Placed item on table");
+        isPlacing = false;
+        Debug.Log($"Placed {item.name} on white table.");
 
     }    
 

@@ -55,7 +55,9 @@
     <Compile Include="Assets\Scripts\Dialogue\dialogAwalScene.cs" />
     <Compile Include="Assets\Scripts\Quest\QuestData.cs" />
     <Compile Include="Assets\Scripts\Items\InventoryManager.cs" />
+    <Compile Include="Assets\Scripts\NPC\SimpleBitFollower.cs" />
     <Compile Include="Assets\Scripts\UI\InventoryUI.cs" />
+    <Compile Include="Assets\Scripts\UI\QuestChecklistSlotUI.cs" />
     <Compile Include="Assets\Scripts\UI\QuestUI.cs" />
     <Compile Include="Assets\Scripts\Items\ItemData.cs" />
     <Compile Include="Assets\Scripts\Quest\QuestMarker.cs" />
@@ -66,7 +68,9 @@
     <Compile Include="Assets\Scripts\Player\PlayerInput.cs" />
     <Compile Include="Assets\Asset\vfx\Scripts\PortalRotate.cs" />
     <Compile Include="Assets\Scripts\UI\InteractionPromptUI.cs" />
+    <Compile Include="Assets\Scripts\Quest\Level2IntroSequenceController.cs" />
     <Compile Include="Assets\Scripts\Player\PlayerMovement.cs" />
+    <Compile Include="Assets\Scripts\Quest\Level2ProgressController.cs" />
     <Compile Include="Assets\Scripts\Dialogue\DialogueSystem.cs" />
     <Compile Include="Assets\Scripts\Dialogue\DialogueData.cs" />
     <Compile Include="Assets\Scripts\Player\PlayerController.cs" />
@@ -75,6 +79,7 @@
     <Compile Include="Assets\Scripts\UI\DialogueUI.cs" />
     <Compile Include="Assets\Scripts\SceneManager\SceneManagerButton.cs" />
     <Compile Include="Assets\Settings\TutorialInfo\Scripts\Readme.cs" />
+    <Compile Include="Assets\Scripts\UI\Level2QuestChecklistUI.cs" />
     <Compile Include="Assets\Scripts\Items\TableSocket.cs" />
     <Compile Include="Assets\Scripts\System\GameManager.cs" />
     <Compile Include="Assets\Scripts\NPC\RobotNPC.cs" />

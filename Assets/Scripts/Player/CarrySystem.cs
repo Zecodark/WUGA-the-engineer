@@ -1,188 +1,140 @@
-using System.Collections;
 using UnityEngine;
 
 public class CarrySystem : MonoBehaviour
 {
-    [Header("Chest Position")]
-    [SerializeField] private Vector3 chestOffset =
-        new Vector3(0f, 1.2f, 0.65f);
-    [SerializeField, Min(0.1f)] private float maximumCarrySize = 0.8f;
+    [SerializeField] private Transform carryPosition;
     [SerializeField] private Animator animator;
 
-    private Transform carryAnchor;
     private GameObject currentItem;
-    private bool isCarrying;
-    private Collider[] carriedColliders;
-    private bool[] colliderStates;
-    private Rigidbody[] carriedBodies;
-    private bool[] bodyKinematicStates;
-    private bool[] bodyGravityStates;
+    private Transform originalParent;
     private Vector3 originalScale;
+    private Collider[] itemColliders;
+    private Rigidbody[] itemRigidbodies;
 
-    public bool IsCarrying() => isCarrying;
+    public bool IsCarrying() => currentItem != null;
     public GameObject GetCurrentItem() => currentItem;
 
     private void Awake()
     {
-        GameObject anchorObject = new GameObject("RuntimeCarryPosition");
-        carryAnchor = anchorObject.transform;
-        carryAnchor.SetParent(transform, false);
-        carryAnchor.localPosition = chestOffset;
-        carryAnchor.localRotation = Quaternion.identity;
-
         if (animator == null)
             animator = GetComponentInChildren<Animator>();
+
+        if (carryPosition == null)
+            carryPosition = FindChildByName(transform, "CarryPosition");
+
+        if (carryPosition == null &&
+            animator != null &&
+            animator.isHuman)
+        {
+            carryPosition =
+                animator.GetBoneTransform(HumanBodyBones.RightHand);
+        }
+
+        if (carryPosition == null)
+        {
+            Debug.LogError(
+                "[CarrySystem] CarryPosition tidak ditemukan pada hierarchy player.",
+                this
+            );
+        }
     }
 
-    public void CarryItem(GameObject item)
+    public bool CarryItem(GameObject item)
     {
-        if (isCarrying || item == null || carryAnchor == null)
-            return;
+        if (item == null || carryPosition == null || IsCarrying())
+            return false;
 
         currentItem = item;
-        isCarrying = true;
+        originalParent = item.transform.parent;
         originalScale = item.transform.localScale;
 
-        DisableItemPhysics(item);
-        FitItemForCarrying(item);
+        SetItemPhysics(false);
+
+        // Pertahankan ukuran dunia item meskipun CarryPosition berada
+        // di bawah model karakter yang memiliki skala kecil.
+        item.transform.SetParent(carryPosition, true);
+        item.transform.localPosition = Vector3.zero;
+        item.transform.localRotation = Quaternion.identity;
 
         if (animator != null)
             animator.SetBool("IsCarrying", true);
 
-        StartCoroutine(MoveToChest(item));
-    }
-
-    private IEnumerator MoveToChest(GameObject item)
-    {
-        const float duration = 0.25f;
-        float elapsed = 0f;
-        Vector3 startPosition = item.transform.position;
-        Quaternion startRotation = item.transform.rotation;
-
-        while (elapsed < duration && item != null)
-        {
-            elapsed += Time.deltaTime;
-            float t = Mathf.SmoothStep(
-                0f,
-                1f,
-                Mathf.Clamp01(elapsed / duration)
-            );
-
-            item.transform.position = Vector3.Lerp(
-                startPosition,
-                carryAnchor.position,
-                t
-            );
-            item.transform.rotation = Quaternion.Slerp(
-                startRotation,
-                carryAnchor.rotation,
-                t
-            );
-            yield return null;
-        }
-
-        if (item == null)
-            yield break;
-
-        item.transform.SetParent(carryAnchor, true);
-        item.transform.position = carryAnchor.position;
-        item.transform.rotation = carryAnchor.rotation;
-        Debug.Log("Carrying: " + item.name);
+        Debug.Log(
+            $"[CarrySystem] {item.name} menempel ke {carryPosition.name}.",
+            item
+        );
+        return true;
     }
 
     public void DropItem()
     {
-        if (!isCarrying || currentItem == null)
+        if (!IsCarrying())
             return;
 
-        currentItem.transform.SetParent(null, true);
+        currentItem.transform.SetParent(originalParent, true);
         currentItem.transform.localScale = originalScale;
-        RestoreItemPhysics();
+        SetItemPhysics(true);
 
         if (animator != null)
             animator.SetBool("IsCarrying", false);
 
         currentItem = null;
-        isCarrying = false;
-        carriedColliders = null;
-        colliderStates = null;
-        carriedBodies = null;
-        bodyKinematicStates = null;
-        bodyGravityStates = null;
+        originalParent = null;
+        itemColliders = null;
+        itemRigidbodies = null;
     }
 
-    private void DisableItemPhysics(GameObject item)
+    private void SetItemPhysics(bool enabled)
     {
-        carriedColliders = item.GetComponentsInChildren<Collider>(true);
-        colliderStates = new bool[carriedColliders.Length];
-
-        for (int i = 0; i < carriedColliders.Length; i++)
+        if (!enabled)
         {
-            colliderStates[i] = carriedColliders[i].enabled;
-            carriedColliders[i].enabled = false;
+            itemColliders =
+                currentItem.GetComponentsInChildren<Collider>(true);
+            itemRigidbodies =
+                currentItem.GetComponentsInChildren<Rigidbody>(true);
         }
 
-        carriedBodies = item.GetComponentsInChildren<Rigidbody>(true);
-        bodyKinematicStates = new bool[carriedBodies.Length];
-        bodyGravityStates = new bool[carriedBodies.Length];
-
-        for (int i = 0; i < carriedBodies.Length; i++)
+        if (itemColliders != null)
         {
-            Rigidbody body = carriedBodies[i];
-            bodyKinematicStates[i] = body.isKinematic;
-            bodyGravityStates[i] = body.useGravity;
-            body.isKinematic = true;
-            body.useGravity = false;
-            body.linearVelocity = Vector3.zero;
-            body.angularVelocity = Vector3.zero;
-        }
-    }
-
-    private void RestoreItemPhysics()
-    {
-        if (carriedColliders != null)
-        {
-            for (int i = 0; i < carriedColliders.Length; i++)
+            foreach (Collider itemCollider in itemColliders)
             {
-                if (carriedColliders[i] != null)
-                    carriedColliders[i].enabled = colliderStates[i];
+                if (itemCollider != null)
+                    itemCollider.enabled = enabled;
             }
         }
 
-        if (carriedBodies != null)
+        if (itemRigidbodies != null)
         {
-            for (int i = 0; i < carriedBodies.Length; i++)
+            foreach (Rigidbody body in itemRigidbodies)
             {
-                Rigidbody body = carriedBodies[i];
-
                 if (body == null)
                     continue;
 
-                body.isKinematic = bodyKinematicStates[i];
-                body.useGravity = bodyGravityStates[i];
+                body.useGravity = enabled;
+                body.isKinematic = !enabled;
+                if (!enabled) 
+                    body.interpolation = RigidbodyInterpolation.None;
+                else
+                    body.interpolation = RigidbodyInterpolation.Interpolate;
             }
         }
     }
 
-    private void FitItemForCarrying(GameObject item)
+    private static Transform FindChildByName(
+        Transform root,
+        string childName)
     {
-        Renderer[] renderers = item.GetComponentsInChildren<Renderer>(true);
+        foreach (Transform child in root)
+        {
+            if (child.name == childName)
+                return child;
 
-        if (renderers.Length == 0)
-            return;
+            Transform result = FindChildByName(child, childName);
 
-        Bounds bounds = renderers[0].bounds;
+            if (result != null)
+                return result;
+        }
 
-        for (int i = 1; i < renderers.Length; i++)
-            bounds.Encapsulate(renderers[i].bounds);
-
-        float largestSize = Mathf.Max(
-            bounds.size.x,
-            bounds.size.y,
-            bounds.size.z
-        );
-
-        if (largestSize > maximumCarrySize)
-            item.transform.localScale *= maximumCarrySize / largestSize;
+        return null;
     }
 }

@@ -81,8 +81,11 @@ public class Level2ProgressController : MonoBehaviour
 
     private void Start()
     {
-        Debug.Log("[Level2ProgressController] Start() called - auto-starting level progress");
-        StartLevelProgress();
+        // Jika ada intro controller, quest dimulai lewat callback setelah
+        // dialog pembuka selesai. Ini mencegah quest aktif saat player
+        // masih dikunci oleh cutscene.
+        if (FindFirstObjectByType<Level2IntroSequenceController>() == null)
+            StartLevelProgress();
     }
 
     public void StartLevelProgress()
@@ -120,17 +123,14 @@ public class Level2ProgressController : MonoBehaviour
     public bool CanInteractWith(ItemData item)
     {
         if (!sequenceStarted || item == null)
-        {
-            Debug.Log($"[Level2ProgressController] CanInteractWith: sequenceStarted={sequenceStarted}, item={item?.name}");
             return false;
-        }
 
         int stepIndex = FindStepIndex(item.itemId);
-        bool isPlaced = placedItemIds.Contains(item.itemId);
-        bool result = stepIndex >= 0 && !isPlaced;
-        
-        Debug.Log($"[Level2ProgressController] CanInteractWith({item.name}): stepIndex={stepIndex}, isPlaced={isPlaced}, result={result}");
-        return result;
+
+        // Semua item quest boleh diambil dalam urutan apa pun.
+        // Satu-satunya pembatas: item terdaftar dan belum diletakkan.
+        return stepIndex >= 0 &&
+               !placedItemIds.Contains(item.itemId);
     }
 
     private void HandleItemGrabbed(ItemData item)
