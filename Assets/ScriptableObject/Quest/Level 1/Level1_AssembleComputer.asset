@@ -1,0 +1,43 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d460290872376524a87f7516191d8b56, type: 3}
+  m_Name: Level1_AssembleComputer
+  m_EditorClassIdentifier: Assembly-CSharp::QuestData
+  questId: level1_assemble_computer
+  questName: Susun 5 Part Komputer
+  objectives:
+  - description: 'Grab RAM '
+    type: 0
+    targetId: ram_stick
+    requiredAmount: 1
+    currentAmount: 0
+  - description: Grab CPU Chip
+    type: 0
+    targetId: cpu_chip
+    requiredAmount: 1
+    currentAmount: 0
+  - description: Grab Power Cable
+    type: 0
+    targetId: power_cable
+    requiredAmount: 1
+    currentAmount: 0
+  - description: 'Grab VGA Card '
+    type: 0
+    targetId: vga_card
+    requiredAmount: 1
+    currentAmount: 0
+  - description: Grab Casing Panel
+    type: 0
+    targetId: casing_panel
+    requiredAmount: 1
+    currentAmount: 0
+  nextQuest: {fileID: 0}
