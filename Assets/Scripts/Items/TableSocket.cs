@@ -82,6 +82,13 @@ public class TableSocket : MonoBehaviour
         Collider col = item.GetComponent<Collider>();
         if (col != null) col.enabled = true;
 
+        Rigidbody rb = item.GetComponent<Rigidbody>();
+        if (rb != null)
+        {
+            rb.isKinematic = true;
+            rb.useGravity = false;
+        }
+
         Debug.Log("Placed item at socket " + socketIndex);
     }
 

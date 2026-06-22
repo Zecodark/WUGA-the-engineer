@@ -12,6 +12,7 @@ public class DialogueSystem : MonoBehaviour
     private bool isDialogueActive;
     private bool externalSequenceActive;
     private int startedFrame;
+    private float lastDialogueEndTime;
 
     public event Action OnDialogueStarted;
     public event Action OnDialogueEnded;
@@ -33,7 +34,7 @@ public class DialogueSystem : MonoBehaviour
     {
         if (isDialogueActive && !externalSequenceActive)
         {
-            if (Time.frameCount > startedFrame && (Input.GetKeyDown(KeyCode.E) || Input.GetKeyDown(KeyCode.Return)))
+            if (Time.frameCount > startedFrame && Input.anyKeyDown)
             {
                 NextLine();
             }
@@ -177,6 +178,7 @@ public class DialogueSystem : MonoBehaviour
         isDialogueActive = false;
         externalSequenceActive = false;
         currentDialogue = null;
+        lastDialogueEndTime = Time.time;
 
         dialogueUI.HideChoices();
         dialogueUI.HideDialogue();
@@ -194,6 +196,11 @@ public class DialogueSystem : MonoBehaviour
     public bool IsDialogueActive()
     {
         return isDialogueActive;
+    }
+
+    public bool IsDialogueActiveOrJustEnded()
+    {
+        return isDialogueActive || (Time.time - lastDialogueEndTime < 0.2f);
     }
 
     public bool IsExternalSequenceActive()

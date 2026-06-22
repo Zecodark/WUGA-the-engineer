@@ -25,17 +25,23 @@ public class PlaceInteraction : MonoBehaviour
             return;
         }
 
+        if (DialogueSystem.Instance != null && DialogueSystem.Instance.IsDialogueActiveOrJustEnded())
+        {
+            if(promptUI != null) promptUI.Hide();
+            return;
+        }
+
         bool playerInRange = CheckPlayerProximity();
 
         if(promptUI != null)
         {
             if(playerInRange)
-                promptUI.Show("Press E or G to Place");
+                promptUI.Show("Press G to Place");
             else
                 promptUI.Hide();
         }
 
-        if (playerInRange && (Input.GetKeyDown(KeyCode.G) || Input.GetKeyDown(KeyCode.E)))
+        if (playerInRange && Input.GetKeyDown(KeyCode.G))
             PlaceItem();
     }
 

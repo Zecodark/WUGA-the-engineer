@@ -1193,7 +1193,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 207959436}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Socket PC
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1208,8 +1208,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 207959435}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.00716, y: -0, z: 0.00385}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0.0052599963, y: 0, z: 0.00493}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2466,7 +2466,7 @@ Transform:
   m_GameObject: {fileID: 330585543}
   serializedVersion: 2
   m_LocalRotation: {x: -0.0000000024767763, y: 0.99030864, z: -0.13888419, w: -0.000000017660565}
-  m_LocalPosition: {x: 10.616094, y: 6.7376833, z: 12.033839}
+  m_LocalPosition: {x: 10.616094, y: 6.866492, z: 12.033839}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2592,7 +2592,6 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 1955457465}
   - {fileID: 1124995365}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -4578,7 +4577,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 633569496}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Socket Power Supply
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4593,8 +4592,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 633569495}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.00633, y: -0, z: 0.00385}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -0.0063300002, y: 5.569736e-10, z: 0.0041599995}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -5202,7 +5201,7 @@ Transform:
   m_GameObject: {fileID: 647823780}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 1.3000002, y: 0.19000006, z: -5.19657}
+  m_LocalPosition: {x: 1.3000002, y: 0.19000006, z: -5.2}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -10515,6 +10514,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: mouse
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 3fef0ecb2688a9744bf30b28dd64661e, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -11061,6 +11064,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: 310e5818b8fa18647b34d286b3e1eb36, type: 3}
       insertIndex: -1
       addedObject: {fileID: 838207002}
+    - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: 310e5818b8fa18647b34d286b3e1eb36, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2032235937}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 310e5818b8fa18647b34d286b3e1eb36, type: 3}
       insertIndex: -1
@@ -11644,7 +11650,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 899272408}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Socket Monitor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -11659,8 +11665,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 899272407}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.00418, y: -0, z: 0.00385}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -0.00019, y: 5.569736e-10, z: 0.0046600015}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -12371,8 +12377,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1015750975}
   - component: {fileID: 1015750976}
-  - component: {fileID: 1015750977}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Socket Keyboard
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -12388,7 +12393,7 @@ Transform:
   m_GameObject: {fileID: 1015750974}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071068, y: -0, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: -0.001750002, y: -0, z: 0.0022}
+  m_LocalPosition: {x: 0.0017299956, y: -0.0016899994, z: 0.0030800009}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -12415,28 +12420,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!64 &1015750977
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1015750974}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: -8663940899158892711, guid: 2e802545586f5c545ad6386f070b29d5, type: 3}
 --- !u!1001 &1016120553
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -13073,7 +13056,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1043041856}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Socket Mouse
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -13089,7 +13072,7 @@ Transform:
   m_GameObject: {fileID: 1043041855}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.00077, y: -0, z: 0.00385}
+  m_LocalPosition: {x: -0.00337, y: -0.00172, z: 0.00372}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -20413,6 +20396,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: keyboard
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 2e802545586f5c545ad6386f070b29d5, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -20452,8 +20439,8 @@ MonoBehaviour:
   itemData: {fileID: 11400000, guid: 783007452caf7434e8c0ca788af8d715, type: 2}
   interactionDistance: 3.5
   interactionPrompt: {fileID: 0}
-  carryPositionOffset: {x: 0, y: 0, z: 0}
-  carryRotationOffset: {x: 0, y: 0, z: 0}
+  carryPositionOffset: {x: 0, y: -0.04, z: 0}
+  carryRotationOffset: {x: 180, y: 0, z: 0}
 --- !u!65 &1360561983
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -26799,6 +26786,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: monitor
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 3b9ec825499e1744ca488221dff1ef70, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -27536,7 +27527,7 @@ MonoBehaviour:
   itemData: {fileID: 11400000, guid: 7d2a0f4c67344c248f399106ae2a964f, type: 2}
   interactionDistance: 3.5
   interactionPrompt: {fileID: 0}
-  carryPositionOffset: {x: 0, y: 0, z: 0}
+  carryPositionOffset: {x: 0, y: 0, z: 0.02}
   carryRotationOffset: {x: 0, y: 0, z: 0}
 --- !u!54 &1567333896
 Rigidbody:
@@ -27767,16 +27758,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Unity.Cinemachine::Unity.Cinemachine.CinemachineCamera
   Priority:
-    Enabled: 0
-    m_Value: 0
+    Enabled: 1
+    m_Value: 10
   OutputChannel: 1
   StandbyUpdate: 2
   m_StreamingVersion: 20241001
   m_LegacyPriority: 0
   Target:
-    TrackingTarget: {fileID: 835907786}
-    LookAtTarget: {fileID: 0}
-    CustomLookAtTarget: 0
+    TrackingTarget: {fileID: 2032235937}
+    LookAtTarget: {fileID: 2032235937}
+    CustomLookAtTarget: 1
   Lens:
     FieldOfView: 60.6
     OrthographicSize: 5
@@ -27806,7 +27797,7 @@ Transform:
   m_GameObject: {fileID: 1570144278}
   serializedVersion: 2
   m_LocalRotation: {x: 8.037176e-10, y: 0.9903087, z: -0.13888419, w: 0.0000000057308776}
-  m_LocalPosition: {x: 10.616094, y: 6.9479733, z: 13.162015}
+  m_LocalPosition: {x: 10.616094, y: 7.0767817, z: 13.162015}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -28297,6 +28288,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: cpu
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: e6677c970fb730141856c337a78a64c1, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -28331,8 +28326,8 @@ MonoBehaviour:
   itemData: {fileID: 11400000, guid: 698e57b31668a7942982658b254d79f6, type: 2}
   interactionDistance: 3.5
   interactionPrompt: {fileID: 0}
-  carryPositionOffset: {x: 0, y: 0, z: 0}
-  carryRotationOffset: {x: 0, y: 0, z: 0}
+  carryPositionOffset: {x: 0, y: 0, z: 0.02}
+  carryRotationOffset: {x: 0, y: 90, z: 0}
 --- !u!4 &1655306676 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: e6677c970fb730141856c337a78a64c1, type: 3}
@@ -29969,52 +29964,6 @@ Transform:
   - {fileID: 306357744}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1955457464
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1955457465}
-  - component: {fileID: 1955457466}
-  m_Layer: 0
-  m_Name: DialogueCamera
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 0
---- !u!4 &1955457465
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1955457464}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 335426300}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1955457466
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1955457464}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9c2cdce61ec72b54aa3fdb9ffa9104ea, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::DialogueCamera
-  dialoguePosition: {fileID: 0}
-  moveSpeed: 5
 --- !u!1 &1963381031
 GameObject:
   m_ObjectHideFlags: 0
@@ -35781,6 +35730,37 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
+--- !u!1 &2032235936
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2032235937}
+  m_Layer: 0
+  m_Name: CameraTarget
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2032235937
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2032235936}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0.994974, z: -0, w: -0.1001335}
+  m_LocalPosition: {x: 0, y: 1.5, z: 0}
+  m_LocalScale: {x: 11.645208, y: 11.645209, z: 11.645208}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 835907786}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &2062269423
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -62,7 +62,6 @@
     <Compile Include="Assets\Scripts\Items\ItemData.cs" />
     <Compile Include="Assets\Scripts\Quest\QuestMarker.cs" />
     <Compile Include="Assets\Scripts\Quest\QuestGiver.cs" />
-    <Compile Include="Assets\Scripts\Camera\DialogueCamera.cs" />
     <Compile Include="Assets\Scripts\Camera\BitCutSceneDirector.cs" />
     <Compile Include="Assets\Scripts\Dialogue\DialogueState.cs" />
     <Compile Include="Assets\Scripts\Player\PlayerInput.cs" />

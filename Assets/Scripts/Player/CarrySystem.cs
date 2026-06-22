@@ -11,6 +11,13 @@ public class CarrySystem : MonoBehaviour
     private Collider[] itemColliders;
     private Rigidbody[] itemRigidbodies;
 
+    // Container bantu agar item tidak terkena scale aneh dari tulang karakter (rig)
+    // yang dapat menyebabkan bug bounds rendering dan membuat kamera menjauh.
+    private Transform carryContainer;
+
+    private Transform cameraTarget;
+    private Vector3 originalCameraTargetLocalPos;
+
     public bool IsCarrying() => currentItem != null;
     public GameObject GetCurrentItem() => currentItem;
 
@@ -37,6 +44,34 @@ public class CarrySystem : MonoBehaviour
                 this
             );
         }
+
+        // Buat container terpisah yang terhindar dari skala ekstrem rig
+        carryContainer = new GameObject("CarryContainer").transform;
+        carryContainer.SetParent(transform);
+        carryContainer.localPosition = Vector3.zero;
+        carryContainer.localRotation = Quaternion.identity;
+        carryContainer.localScale = Vector3.one;
+
+        cameraTarget = FindChildByName(transform, "CameraTarget");
+        if (cameraTarget != null)
+        {
+            originalCameraTargetLocalPos = cameraTarget.localPosition;
+        }
+    }
+
+    private void LateUpdate()
+    {
+        if (carryContainer != null && carryPosition != null)
+        {
+            carryContainer.position = carryPosition.position;
+            carryContainer.rotation = carryPosition.rotation;
+        }
+
+        // Cegah animasi "Carry" dari Mixamo/Blender menggeser CameraTarget secara ekstrem
+        if (cameraTarget != null)
+        {
+            cameraTarget.localPosition = originalCameraTargetLocalPos;
+        }
     }
 
     public bool CarryItem(GameObject item)
@@ -50,11 +85,13 @@ public class CarrySystem : MonoBehaviour
 
         SetItemPhysics(false);
 
-        // Pertahankan ukuran dunia item meskipun CarryPosition berada
-        // di bawah model karakter yang memiliki skala kecil.
-        item.transform.SetParent(carryPosition, true);
+        // Jangan menempelkan item langsung ke carryPosition jika rig memiliki skala aneh
+        // (bisa membuat collider/bounds item membesar dan merusak Cinemachine).
+        // Sebagai gantinya, tempelkan ke carryContainer yang scalenya normal (1,1,1).
+        item.transform.SetParent(carryContainer, false);
         item.transform.localPosition = Vector3.zero;
         item.transform.localRotation = Quaternion.identity;
+        item.transform.localScale = originalScale;
 
         if (animator != null)
             animator.SetBool("IsCarrying", true);

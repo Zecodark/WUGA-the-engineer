@@ -22,7 +22,7 @@ public class GrabInteraction : MonoBehaviour
     {
         if (isGrabbed || isPlaced) return;
 
-        if (DialogueSystem.Instance != null && DialogueSystem.Instance.IsDialogueActive())
+        if (DialogueSystem.Instance != null && DialogueSystem.Instance.IsDialogueActiveOrJustEnded())
             return;
 
         CarrySystem carrySystem = FindFirstObjectByType<CarrySystem>();
@@ -44,7 +44,7 @@ public class GrabInteraction : MonoBehaviour
         if (interactionPrompt != null)
             interactionPrompt.SetActive(playerInRange && CanBeGrabbed());
 
-        if (playerInRange && CanBeGrabbed() && (Input.GetKeyDown(KeyCode.E) || Input.GetKeyDown(KeyCode.G)))
+        if (playerInRange && CanBeGrabbed() && Input.GetKeyDown(KeyCode.G))
         {
             Grab(carrySystem);
         }
