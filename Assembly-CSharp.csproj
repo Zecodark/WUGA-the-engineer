@@ -59,6 +59,7 @@
     <Compile Include="Assets\Scripts\UI\InventoryUI.cs" />
     <Compile Include="Assets\Scripts\UI\QuestChecklistSlotUI.cs" />
     <Compile Include="Assets\Scripts\UI\QuestUI.cs" />
+    <Compile Include="Assets\Scripts\ScriptPortal\PortalLevel1.cs" />
     <Compile Include="Assets\Scripts\Items\ItemData.cs" />
     <Compile Include="Assets\Scripts\Quest\QuestMarker.cs" />
     <Compile Include="Assets\Scripts\Quest\QuestGiver.cs" />
