@@ -15,29 +15,29 @@ MonoBehaviour:
   questId: tutorial_grab_5
   questName: Grab Komponen
   objectives:
-  - description: 'Grab RAM '
+  - description: Find & Bring Monitor
     type: 0
-    targetId: ram_stick
+    targetId: monitor
     requiredAmount: 1
     currentAmount: 0
-  - description: Grab CPU Chip
+  - description: 'Find & Bring Keyboard '
     type: 0
-    targetId: cpu_chip
+    targetId: keyboard
     requiredAmount: 1
     currentAmount: 0
-  - description: Grab Power Cable
+  - description: Find & Bring Mouse
     type: 0
-    targetId: power_cable
+    targetId: mouse
     requiredAmount: 1
     currentAmount: 0
-  - description: 'Grab VGA Card '
+  - description: Find & Bring CPU
     type: 0
-    targetId: vga_card
+    targetId: cpu
     requiredAmount: 1
     currentAmount: 0
-  - description: Grab Casing Panel
+  - description: Find & Bring Power Supply
     type: 0
-    targetId: casing_panel
+    targetId: power_supply
     requiredAmount: 1
     currentAmount: 0
   nextQuest: {fileID: 0}

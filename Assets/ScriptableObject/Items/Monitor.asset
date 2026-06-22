@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9520aa0d4e979cc46a85942569aacf52, type: 3}
-  m_Name: RAM_Stick
+  m_Name: Monitor
   m_EditorClassIdentifier: Assembly-CSharp::ItemData
-  itemId: ram_stick
-  itemName: RAM Stick
+  itemId: monitor
+  itemName: Monitor
   icon: {fileID: 0}
   size: 0
   description: 

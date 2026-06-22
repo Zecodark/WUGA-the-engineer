@@ -19,6 +19,12 @@ public class DialogAwalEntry
     public string content;
 }
 
+public enum DialogPlaybackMode
+{
+    Cutscene,
+    Passive
+}
+
 /// <summary>
 /// Dialog pembuka dengan satu PanelDialog dan satu TextDialog.
 /// Setiap entry dapat mengganti sprite panel dan isi teks secara dinamis.
@@ -32,6 +38,9 @@ public class dialogAwalScene : MonoBehaviour
     [Header("Daftar Dialog")]
     [Tooltip("Satu elemen = kategori, sprite panel, dan isi teks.")]
     [SerializeField] private DialogAwalEntry[] dialogEntries;
+
+    [Header("Pemicu")]
+    [SerializeField] private bool playOnStart = true;
 
     [Header("Efek Teks")]
     [SerializeField] private bool useTypingEffect = true;
@@ -57,15 +66,18 @@ public class dialogAwalScene : MonoBehaviour
     private bool isActive;
     private bool previousCameraInputState;
     private float inputReadyTime;
+    private DialogAwalEntry[] activeEntries;
+    private DialogPlaybackMode playbackMode;
+    private Action runtimeFinishedCallback;
 
     public bool IsActive => isActive;
     public int CurrentDialogIndex => currentDialogIndex;
 
     private DialogAwalEntry CurrentEntry =>
-        dialogEntries != null &&
+        activeEntries != null &&
         currentDialogIndex >= 0 &&
-        currentDialogIndex < dialogEntries.Length
-            ? dialogEntries[currentDialogIndex]
+        currentDialogIndex < activeEntries.Length
+            ? activeEntries[currentDialogIndex]
             : null;
 
     private void Reset()
@@ -81,7 +93,8 @@ public class dialogAwalScene : MonoBehaviour
 
     private void Start()
     {
-        BeginDialog();
+        if (playOnStart)
+            BeginDialog();
     }
 
     private void Update()
@@ -89,24 +102,40 @@ public class dialogAwalScene : MonoBehaviour
         if (!isActive)
             return;
 
-        KeepGameplayLocked();
+        if (playbackMode == DialogPlaybackMode.Cutscene)
+            KeepGameplayLocked();
 
         if (Time.unscaledTime < inputReadyTime)
             return;
 
-        bool mousePressed =
-            Input.GetMouseButtonDown(0) ||
-            Input.GetMouseButtonDown(1) ||
-            Input.GetMouseButtonDown(2);
-
-        if (Input.anyKeyDown || mousePressed)
+        if (Input.GetKeyDown(KeyCode.E) ||
+            Input.GetKeyDown(KeyCode.Return))
+        {
             AdvanceDialog();
+        }
     }
 
     public void BeginDialog()
     {
+        PlayDialog(dialogEntries, DialogPlaybackMode.Cutscene);
+    }
+
+    public void BeginDialog(Action finishedCallback)
+    {
+        PlayDialog(
+            dialogEntries,
+            DialogPlaybackMode.Cutscene,
+            finishedCallback
+        );
+    }
+
+    public void PlayDialog(
+        DialogAwalEntry[] entries,
+        DialogPlaybackMode mode = DialogPlaybackMode.Passive,
+        Action finishedCallback = null)
+    {
         if (isActive)
-            return;
+            FinishDialog();
 
         ResolveReferences();
 
@@ -119,22 +148,27 @@ public class dialogAwalScene : MonoBehaviour
             return;
         }
 
-        if (dialogEntries == null || dialogEntries.Length == 0)
+        if (entries == null || entries.Length == 0)
         {
             Debug.LogWarning(
                 "Daftar dialog masih kosong. Gameplay langsung dimulai.",
                 this
             );
-            FinishDialog();
+            finishedCallback?.Invoke();
             return;
         }
 
+        activeEntries = entries;
+        playbackMode = mode;
+        runtimeFinishedCallback = finishedCallback;
         currentDialogIndex = 0;
         isActive = true;
         inputReadyTime = Time.unscaledTime + initialInputDelay;
 
         SetDialogVisible(true);
-        LockGameplay();
+        if (playbackMode == DialogPlaybackMode.Cutscene)
+            LockGameplay();
+
         onDialogStarted?.Invoke();
         ShowCurrentDialog();
     }
@@ -152,7 +186,7 @@ public class dialogAwalScene : MonoBehaviour
 
         currentDialogIndex++;
 
-        if (currentDialogIndex >= dialogEntries.Length)
+        if (currentDialogIndex >= activeEntries.Length)
         {
             FinishDialog();
             return;
@@ -166,8 +200,16 @@ public class dialogAwalScene : MonoBehaviour
         StopTyping();
         isActive = false;
         SetDialogVisible(false);
-        UnlockGameplay();
+
+        if (playbackMode == DialogPlaybackMode.Cutscene)
+            UnlockGameplay();
+
         onDialogFinished?.Invoke();
+
+        Action callback = runtimeFinishedCallback;
+        runtimeFinishedCallback = null;
+        activeEntries = null;
+        callback?.Invoke();
     }
 
     private void ShowCurrentDialog()
@@ -310,7 +352,7 @@ public class dialogAwalScene : MonoBehaviour
 
     private void OnDisable()
     {
-        if (isActive)
+        if (isActive && playbackMode == DialogPlaybackMode.Cutscene)
             UnlockGameplay();
     }
 }

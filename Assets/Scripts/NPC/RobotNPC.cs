@@ -11,10 +11,16 @@ public class RobotNPC : MonoBehaviour
     [SerializeField] private InteractionPromptUI promptUI;
     [SerializeField] private Transform player;
     [SerializeField] private float rotationSpeed = 5f;
+    
+    [Header("Follow Settings")]
+    [SerializeField] private float followDistance = 3f;
+    [SerializeField] private float followSpeed = 5f;
+    [SerializeField] private float hoverHeight = 1.5f;
 
     private DialogueState currentState = DialogueState.FirstMeeting;
     private Vector3 startPosition;
     private bool isStartingDialogue;
+    private bool isFollowing = false;
 
     void Start()
     {
@@ -30,17 +36,18 @@ public class RobotNPC : MonoBehaviour
 
     void Update()
     {
-
         // Face Player
         if (player != null)
-        FacePlayer();
+            FacePlayer();
 
-        // Hover
-        Hover();
+        // Follow Player atau Hover di posisi
+        if (isFollowing && player != null)
+            FollowPlayer();
+        else
+            Hover();
 
         //Proximity
         bool playerInRange = CheckPlayerProximity();
-        
 
         bool cutsceneActive =
             BitCutSceneDirector.Instance != null &&
@@ -56,7 +63,7 @@ public class RobotNPC : MonoBehaviour
         }
 
         if (!Input.GetKeyDown(KeyCode.E))
-        return;
+            return;
 
         if(BitCutSceneDirector.Instance != null &&
         BitCutSceneDirector.Instance.IsSequenceRunning)
@@ -88,12 +95,25 @@ public class RobotNPC : MonoBehaviour
         Quaternion targetRotation = Quaternion.LookRotation(direction);
         transform.rotation = Quaternion.Slerp(transform.rotation,
         targetRotation, rotationSpeed * Time.deltaTime);
+    }
 
+    void FollowPlayer()
+    {
+        // Hitung posisi target (di belakang player)
+        Vector3 targetPosition = player.position - player.forward * followDistance;
+        targetPosition.y = player.position.y + hoverHeight;
+
+        // Smooth follow
+        transform.position = Vector3.Lerp(
+            transform.position,
+            targetPosition,
+            followSpeed * Time.deltaTime
+        );
     }
     
     void Hover()
     {
-        // Hover
+        // Hover di posisi saat ini
         float newY = startPosition.y + Mathf.Sin(Time.time * hoverSpeed) * 0.1f;
         transform.position = new Vector3(startPosition.x, newY, startPosition.z);
     }
@@ -130,35 +150,33 @@ public class RobotNPC : MonoBehaviour
     }
 
     IEnumerator StartDialogueWithTransition(DialogueData dialogue)
-{
-    isStartingDialogue = true;
+    {
+        isStartingDialogue = true;
 
-    if (promptUI != null)
-        promptUI.Hide();
+        if (promptUI != null)
+            promptUI.Hide();
 
-    // Lock player dan aktifkan kamera percakapan.
-    if (BitCutSceneDirector.Instance != null)
-        BitCutSceneDirector.Instance.BeginCutscene();
+        // Lock player dan aktifkan kamera percakapan.
+        if (BitCutSceneDirector.Instance != null)
+            BitCutSceneDirector.Instance.BeginCutscene();
 
-    // Layar menjadi hitam.
-    if (CameraManager.Instance != null)
-        CameraManager.Instance.FadeOut();
+        // Layar menjadi hitam.
+        if (CameraManager.Instance != null)
+            CameraManager.Instance.FadeOut();
 
-    yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(0.5f);
 
-    // DialogueCamera lama tidak digunakan lagi.
+        // Buka layar dari hitam.
+        if (CameraManager.Instance != null)
+            CameraManager.Instance.FadeIn();
 
-    // Buka layar dari hitam.
-    if (CameraManager.Instance != null)
-        CameraManager.Instance.FadeIn();
+        yield return new WaitForSeconds(0.3f);
 
-    yield return new WaitForSeconds(0.3f);
+        if (DialogueSystem.Instance != null)
+            DialogueSystem.Instance.StartDialogue(dialogue, transform.position);
 
-    if (DialogueSystem.Instance != null)
-        DialogueSystem.Instance.StartDialogue(dialogue, transform.position);
-
-    isStartingDialogue = false;
-}
+        isStartingDialogue = false;
+    }
     
 
     DialogueData GetCurrentDialogue()
@@ -180,19 +198,31 @@ public class RobotNPC : MonoBehaviour
     void OnQuestAccepted(QuestData quest)
     {
         SetState(DialogueState.QuestInProgress);
-        Debug.Log("[RobotNPC] State changed to: QuestInProgress");
+        isFollowing = true;  // Mulai follow player
+        Debug.Log("[RobotNPC] State changed to: QuestInProgress, Following player");
     }
 
     void OnQuestCompleted(QuestData quest)
     {
         SetState(DialogueState.QuestCompleted);
-        Debug.Log("[RobotNPC] State changed to: QuestCompleted");
+        isFollowing = false;  // Stop follow
+        Debug.Log("[RobotNPC] State changed to: QuestCompleted, Stop following");
     }
 
 
     public void SetState(DialogueState newState)
     {
         currentState = newState;
+    }
+
+    public void StartFollowing()
+    {
+        isFollowing = true;
+    }
+
+    public void StopFollowing()
+    {
+        isFollowing = false;
     }
 
     void OnDestroy()

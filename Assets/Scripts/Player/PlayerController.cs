@@ -32,11 +32,13 @@ public class PlayerController : MonoBehaviour
     public void LockInput()
     {
         inputLocked = true;
+        Debug.Log("[PlayerController] Input LOCKED");
     }
 
     public void UnlockInput()
     {
         inputLocked = false;
+        Debug.Log("[PlayerController] Input UNLOCKED");
     }
 
 

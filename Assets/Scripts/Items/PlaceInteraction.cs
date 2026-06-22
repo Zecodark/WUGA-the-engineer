@@ -1,7 +1,9 @@
 using UnityEngine;
 using System.Collections;
+using System;
 public class PlaceInteraction : MonoBehaviour
 {
+    public static event Action<ItemData> OnItemPlaced;
 
     [SerializeField] private TableSocket TableSocket;
     [SerializeField] private float placeRange = 3f;
@@ -16,15 +18,6 @@ public class PlaceInteraction : MonoBehaviour
 
     void Update()
     {
-        if (BitCutSceneDirector.Instance != null &&
-            BitCutSceneDirector.Instance.IsCutsceneActive)
-        {
-            if (promptUI != null)
-                promptUI.Hide();
-
-            return;
-        }
-
         if (carrySystem == null || !carrySystem.IsCarrying())
         {
             if(promptUI != null) promptUI.Hide();
@@ -59,6 +52,16 @@ public class PlaceInteraction : MonoBehaviour
     {
         GameObject currentItem = carrySystem.GetCurrentItem();
         if (currentItem == null) return;
+
+        GrabInteraction currentGrab = currentItem.GetComponent<GrabInteraction>();
+        if (currentGrab != null &&
+            Level2ProgressController.Instance != null &&
+            !Level2ProgressController.Instance.CanInteractWith(
+                currentGrab.GetItemData()
+            ))
+        {
+            return;
+        }
 
         int socketIndex = TableSocket.GetAvailableSocketIndex();
         if (socketIndex == -1)
@@ -99,7 +102,14 @@ public class PlaceInteraction : MonoBehaviour
         GrabInteraction grab = item.GetComponent<GrabInteraction>();
         if (grab != null)
         {
-            QuestManager.Instance.UpdateObjective(ObjectiveType.Grab, grab.GetItemData().itemId, 1);
+            ItemData placedItem = grab.GetItemData();
+
+            QuestManager.Instance.UpdateObjective(
+                ObjectiveType.Grab,
+                placedItem.itemId,
+                1
+            );
+            OnItemPlaced?.Invoke(placedItem);
         }
 
         Debug.Log("Placed item on table");
