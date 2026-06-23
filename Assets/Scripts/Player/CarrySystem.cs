@@ -96,6 +96,10 @@ public class CarrySystem : MonoBehaviour
         if (animator != null)
             animator.SetBool("IsCarrying", true);
 
+        PlayerMovement playerMovement = GetComponentInChildren<PlayerMovement>();
+        if (playerMovement != null)
+            playerMovement.SetCarrying(true);
+
         Debug.Log(
             $"[CarrySystem] {item.name} menempel ke {carryPosition.name}.",
             item
@@ -104,7 +108,11 @@ public class CarrySystem : MonoBehaviour
     }
 
     public void DropItem()
-    {
+    {   
+        PlayerMovement playerMovement = GetComponentInChildren<PlayerMovement>();
+        if (playerMovement != null)
+            playerMovement.SetCarrying(false);
+
         if (!IsCarrying())
             return;
 

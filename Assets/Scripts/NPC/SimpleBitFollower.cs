@@ -55,6 +55,8 @@ public class SimpleBitFollower : MonoBehaviour
     [Tooltip("Pilih layer tembok/lingkungan. Default scene ini memakai layer Default.")]
     [SerializeField] private LayerMask obstacleLayers = 1;
     [SerializeField, Min(0f)] private float blockedRetargetDelay = 0.2f;
+    [SerializeField] private Animator animator;
+
 
     private bool following;
     private bool hasDestination;
@@ -65,6 +67,7 @@ public class SimpleBitFollower : MonoBehaviour
     private float targetYaw;
     private float blockedTimer;
     private CharacterController playerCollider;
+   
 
     public bool IsFollowing => following;
 
@@ -72,6 +75,9 @@ public class SimpleBitFollower : MonoBehaviour
     {
         if (!following)
             return;
+
+        if (animator != null)
+            animator.SetBool("IsMoving", following);
 
         ResolvePlayer();
 
