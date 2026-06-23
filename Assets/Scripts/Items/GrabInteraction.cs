@@ -101,7 +101,7 @@ public class GrabInteraction : MonoBehaviour
         if (isGrabbed || isPlaced || itemData == null)
             return false;
 
-        Level2ProgressController quest = Level2ProgressController.Instance;
+        Level1ProgressController quest = Level1ProgressController.Instance;
         return quest == null || quest.CanInteractWith(itemData);
     }
 

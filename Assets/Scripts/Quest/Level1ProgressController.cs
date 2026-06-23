@@ -1,0 +1,336 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.Events;
+
+[Serializable]
+public class Level1QuestStep
+{
+    public string itemId;
+    public string displayName;
+
+    [Tooltip("GameObject item yang ditempatkan di map.")]
+    public GameObject worldObject;
+
+    [Header("Dialog setelah item diambil")]
+    public DialogAwalEntry[] afterGrabDialog;
+
+    [Header("Dialog setelah item dipasang")]
+    public DialogAwalEntry[] afterPlaceDialog;
+}
+
+public class Level1ProgressController : MonoBehaviour
+{
+    public static Level1ProgressController Instance { get; private set; }
+
+    [Header("References")]
+    [SerializeField] private QuestData levelQuest;
+    [SerializeField] private dialogAwalScene canvasDialog;
+    [SerializeField] private SimpleBitFollower bitCompanion;
+    [SerializeField] private QuestUI questUI;
+    [SerializeField] private GameOver gameOver;
+    [SerializeField] private PortalLevel1 levelPortal;
+
+    [Header("Quest Items - Urutan Bebas")]
+    [SerializeField] private Level1QuestStep[] steps;
+    [SerializeField, Min(0f)] private float grabDialogDelay = 1.5f;
+    [SerializeField] private bool hideWorldItemsBeforeQuest = true;
+
+    [Header("Final Dialog")]
+    [SerializeField] private DialogAwalEntry[] finalDialog;
+    [SerializeField] private UnityEvent onLevelSequenceFinished;
+
+    private readonly HashSet<string> grabbedItemIds = new();
+    private readonly HashSet<string> placedItemIds = new();
+    private readonly Dictionary<string, Coroutine> grabDialogRoutines = new();
+    private bool sequenceStarted;
+    private bool finalSequenceStarted;
+
+    public bool IsStarted => sequenceStarted;
+
+    private void Awake()
+    {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+        Instance = this;
+
+        if (bitCompanion == null)
+            bitCompanion = FindFirstObjectByType<SimpleBitFollower>();
+
+        if (gameOver == null)
+            gameOver = FindFirstObjectByType<GameOver>();
+
+        if (levelPortal == null)
+            levelPortal = FindFirstObjectByType<PortalLevel1>();
+
+        ResolveWorldItems();
+
+        if (hideWorldItemsBeforeQuest)
+            SetWorldItemsVisible(false);
+    }
+
+    private void OnEnable()
+    {
+        GrabInteraction.OnItemGrabbed += HandleItemGrabbed;
+        PlaceInteraction.OnItemPlaced += HandleItemPlaced;
+    }
+
+    private void OnDisable()
+    {
+        GrabInteraction.OnItemGrabbed -= HandleItemGrabbed;
+        PlaceInteraction.OnItemPlaced -= HandleItemPlaced;
+    }
+
+    private void Start()
+    {
+        // Jika ada intro controller, quest dimulai lewat callback setelah
+        // dialog pembuka selesai. Ini mencegah quest aktif saat player
+        // masih dikunci oleh cutscene.
+        if (FindFirstObjectByType<Level1IntroSequenceController>() == null)
+            StartLevelProgress();
+    }
+
+    public void StartLevelProgress()
+    {
+        if (sequenceStarted)
+            return;
+
+        sequenceStarted = true;
+        finalSequenceStarted = false;
+        grabbedItemIds.Clear();
+        placedItemIds.Clear();
+        SetWorldItemsVisible(true);
+
+        if (gameOver != null)
+            gameOver.StartLevelTimer(GetRequiredItemCount());
+
+        if (levelQuest != null && QuestManager.Instance != null)
+            QuestManager.Instance.AcceptQuest(levelQuest);
+
+        if (questUI != null)
+            questUI.ResetItems();
+
+        if (bitCompanion != null)
+            bitCompanion.StartFollowing();
+        else
+            Debug.LogError(
+                "[Level1ProgressController] SimpleBitFollower tidak ditemukan.",
+                this
+            );
+
+        Debug.Log(
+            "[Level1ProgressController] Quest dimulai. " +
+            "Semua komponen boleh diambil dalam urutan bebas.",
+            this
+        );
+    }
+
+    public bool CanInteractWith(ItemData item)
+    {
+        if (!sequenceStarted || item == null)
+            return false;
+
+        int stepIndex = FindStepIndex(item.itemId);
+
+        // Semua item quest boleh diambil dalam urutan apa pun.
+        // Satu-satunya pembatas: item terdaftar dan belum diletakkan.
+        return stepIndex >= 0 &&
+               !placedItemIds.Contains(item.itemId);
+    }
+
+    private void HandleItemGrabbed(ItemData item)
+    {
+        if (!sequenceStarted || item == null)
+            return;
+
+        int stepIndex = FindStepIndex(item.itemId);
+
+        if (stepIndex < 0 || !grabbedItemIds.Add(item.itemId))
+            return;
+
+        if (grabDialogRoutines.TryGetValue(
+            item.itemId,
+            out Coroutine previousRoutine))
+        {
+            StopCoroutine(previousRoutine);
+        }
+
+        grabDialogRoutines[item.itemId] = StartCoroutine(
+            ShowGrabDialogAfterDelay(item.itemId, stepIndex)
+        );
+    }
+
+    private IEnumerator ShowGrabDialogAfterDelay(
+        string itemId,
+        int stepIndex)
+    {
+        yield return new WaitForSeconds(grabDialogDelay);
+        grabDialogRoutines.Remove(itemId);
+
+        if (canvasDialog != null &&
+            stepIndex >= 0 &&
+            stepIndex < steps.Length)
+        {
+            canvasDialog.PlayDialog(
+                steps[stepIndex].afterGrabDialog,
+                DialogPlaybackMode.Passive
+            );
+        }
+    }
+
+    private void HandleItemPlaced(ItemData item)
+    {
+        if (!sequenceStarted || item == null)
+            return;
+
+        int stepIndex = FindStepIndex(item.itemId);
+
+        if (stepIndex < 0 || !placedItemIds.Add(item.itemId))
+            return;
+
+        if (grabDialogRoutines.TryGetValue(
+            item.itemId,
+            out Coroutine pendingRoutine))
+        {
+            StopCoroutine(pendingRoutine);
+            grabDialogRoutines.Remove(item.itemId);
+        }
+
+        if (questUI != null)
+            questUI.MarkCompleted(item.itemId);
+
+        if (gameOver != null)
+        {
+            gameOver.UpdateQuestProgress(
+                placedItemIds.Count,
+                GetRequiredItemCount()
+            );
+        }
+
+        bool allCompleted =
+            placedItemIds.Count >= GetRequiredItemCount();
+
+        if (canvasDialog != null)
+        {
+            canvasDialog.PlayDialog(
+                steps[stepIndex].afterPlaceDialog,
+                DialogPlaybackMode.Passive,
+                allCompleted ? FinishLevelSequence : null
+            );
+        }
+        else if (allCompleted)
+        {
+            FinishLevelSequence();
+        }
+    }
+
+    private void FinishLevelSequence()
+    {
+        if (finalSequenceStarted)
+            return;
+
+        finalSequenceStarted = true;
+
+        if (bitCompanion != null)
+            bitCompanion.StopFollowing();
+
+        if (canvasDialog != null &&
+            finalDialog != null &&
+            finalDialog.Length > 0)
+        {
+            canvasDialog.PlayDialog(
+                finalDialog,
+                DialogPlaybackMode.Cutscene,
+                FinishQuestSequence
+            );
+        }
+        else
+        {
+            FinishQuestSequence();
+        }
+    }
+
+    private void FinishQuestSequence()
+    {
+        if (levelPortal != null)
+            levelPortal.UnlockPortal();
+
+        onLevelSequenceFinished?.Invoke();
+    }
+
+    private int FindStepIndex(string itemId)
+    {
+        if (steps == null || string.IsNullOrWhiteSpace(itemId))
+            return -1;
+
+        for (int i = 0; i < steps.Length; i++)
+        {
+            if (steps[i] != null && steps[i].itemId == itemId)
+                return i;
+        }
+
+        return -1;
+    }
+
+    private int GetRequiredItemCount()
+    {
+        if (steps == null)
+            return 0;
+
+        int count = 0;
+
+        foreach (Level1QuestStep step in steps)
+        {
+            if (step != null && !string.IsNullOrWhiteSpace(step.itemId))
+                count++;
+        }
+
+        return count;
+    }
+
+    private void SetWorldItemsVisible(bool visible)
+    {
+        if (steps == null)
+            return;
+
+        foreach (Level1QuestStep step in steps)
+        {
+            if (step != null && step.worldObject != null)
+                step.worldObject.SetActive(visible);
+        }
+    }
+
+    private void ResolveWorldItems()
+    {
+        if (steps == null)
+            return;
+
+        GrabInteraction[] grabItems =
+            FindObjectsByType<GrabInteraction>(
+                FindObjectsInactive.Include,
+                FindObjectsSortMode.None
+            );
+
+        foreach (Level1QuestStep step in steps)
+        {
+            if (step == null || step.worldObject != null)
+                continue;
+
+            foreach (GrabInteraction grabItem in grabItems)
+            {
+                ItemData data = grabItem.GetItemData();
+
+                if (data != null && data.itemId == step.itemId)
+                {
+                    step.worldObject = grabItem.gameObject;
+                    break;
+                }
+            }
+        }
+    }
+}

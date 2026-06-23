@@ -36,7 +36,9 @@ public class QuestManager : MonoBehaviour
         if (activeQuest == null) return;
         foreach (var obj in activeQuest.objectives)
         {
-            if (obj.type == type && obj.targetId == targetId)
+            if (obj.type == type &&
+                NormalizeTargetId(obj.targetId) ==
+                NormalizeTargetId(targetId))
             {
                 obj.currentAmount = Mathf.Min(obj.currentAmount +
                 amount, obj.requiredAmount);
@@ -71,5 +73,17 @@ public class QuestManager : MonoBehaviour
 
     public QuestData GetActiveQuest() => activeQuest;
     public bool IsQuestActive() => activeQuest != null;
+
+    private static string NormalizeTargetId(string targetId)
+    {
+        if (string.IsNullOrWhiteSpace(targetId))
+            return string.Empty;
+
+        string normalized = targetId.Trim().ToLowerInvariant();
+
+        return normalized == "power_supply"
+            ? "power_ups"
+            : normalized;
+    }
 
 }

@@ -37,7 +37,7 @@ MonoBehaviour:
     currentAmount: 0
   - description: Find & Bring Power Supply
     type: 0
-    targetId: power_supply
+    targetId: power_ups
     requiredAmount: 1
     currentAmount: 0
   nextQuest: {fileID: 0}

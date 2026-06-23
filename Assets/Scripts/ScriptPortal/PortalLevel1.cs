@@ -9,12 +9,18 @@ public class PortalLevel1 : MonoBehaviour
     [Tooltip("Masukkan Game Object portal (visual dan collider-nya) ke sini. Jangan masukkan object ini sendiri agar script tetap berjalan.")]
     [SerializeField] private GameObject portalObject;
 
+    [Tooltip("Trigger pada PortalEffect yang menampilkan panel hasil.")]
+    [SerializeField] private PortalFinishTrigger finishTrigger;
+
     void Start()
     {
+        ResolveFinishTrigger();
+
         // Menyembunyikan portal saat game baru mulai
         if (portalObject != null)
         {
             portalObject.SetActive(false);
+            finishTrigger?.SetPortalUnlocked(false);
         }
         else
         {
@@ -33,13 +39,33 @@ public class PortalLevel1 : MonoBehaviour
         // Jika requiredQuest diisi, pastikan yang selesai adalah quest tersebut.
         // Jika tidak diisi, portal akan terbuka pada quest apa saja.
         if (requiredQuest == null || completedQuest == requiredQuest)
+            UnlockPortal();
+    }
+
+    public void UnlockPortal()
+    {
+        if (portalObject == null)
         {
-            if (portalObject != null)
-            {
-                portalObject.SetActive(true); // Memunculkan portal
-                Debug.Log("[PortalLevel1] Portal terbuka!");
-            }
+            Debug.LogWarning(
+                "[PortalLevel1] Portal Object belum dimasukkan.",
+                this
+            );
+            return;
         }
+
+        portalObject.SetActive(true);
+        ResolveFinishTrigger();
+        finishTrigger?.SetPortalUnlocked(true);
+        Debug.Log("[PortalLevel1] Portal terbuka!", this);
+    }
+
+    private void ResolveFinishTrigger()
+    {
+        if (finishTrigger != null || portalObject == null)
+            return;
+
+        finishTrigger =
+            portalObject.GetComponent<PortalFinishTrigger>();
     }
 
     private void OnDestroy()

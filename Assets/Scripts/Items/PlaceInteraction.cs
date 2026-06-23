@@ -77,8 +77,8 @@ public class PlaceInteraction : MonoBehaviour
         }
 
         if (currentGrab != null &&
-            Level2ProgressController.Instance != null &&
-            !Level2ProgressController.Instance.CanInteractWith(
+            Level1ProgressController.Instance != null &&
+            !Level1ProgressController.Instance.CanInteractWith(
                 currentItemData
             ))
         {
