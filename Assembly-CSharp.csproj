@@ -49,6 +49,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Scripts\Camera\CameraManager.cs" />
+    <Compile Include="Assets\Scripts\NPC\SimpleNPCFollow.cs" />
     <Compile Include="Assets\Scripts\Items\GrabInteraction.cs" />
     <Compile Include="Assets\Asset\vfx\ExplosionVFXPlayer.cs" />
     <Compile Include="Assets\Scripts\OpeningScene\IntroVideoController.cs" />
@@ -87,6 +88,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />
+    <None Include="Assets\Level2\VFX\Shaders\CyberNeonPulse.shader" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile Overlay.shader" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile-2-Pass.shader" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_Bitmap.shader" />
