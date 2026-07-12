@@ -21575,6 +21575,24 @@ MonoBehaviour:
       m_Action: Jump
       m_Flags: 0
     m_Flags: 0
+  drawWeaponAction:
+    m_Name: Draw Weapon
+    m_Type: 0
+    m_ExpectedControlType: 
+    m_Id: 00a24b87-876c-43f1-9c68-c8e96d9960d8
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings: []
+    m_Flags: 0
+  attackAction:
+    m_Name: Attack
+    m_Type: 0
+    m_ExpectedControlType: 
+    m_Id: 66364391-c121-4615-bdde-be857356a883
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings: []
+    m_Flags: 0
 --- !u!1 &838207001
 GameObject:
   m_ObjectHideFlags: 0
@@ -42063,6 +42081,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CarrySystem
   carryPosition: {fileID: 838207002}
+  cableCarryPosition: {fileID: 0}
   animator: {fileID: 835907787}
 --- !u!1001 &1965510363
 PrefabInstance:
