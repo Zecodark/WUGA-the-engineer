@@ -12,6 +12,7 @@ public class PlayerController : MonoBehaviour
     [Header("Combat")]
     [SerializeField] private Animator animator;
     [SerializeField] private GameObject weaponObject;
+    [SerializeField] private DebugBlasterWeapon debugBlasterWeapon;
     [SerializeField] private string drawWeaponTrigger = "drawWeapon";
     [SerializeField] private string sheathWeaponTrigger = "sheathWeapon";
     [SerializeField] private string attackTrigger = "Attack";
@@ -37,6 +38,9 @@ public class PlayerController : MonoBehaviour
     {
         if (animator == null)
             animator = GetComponentInChildren<Animator>();
+
+        if (debugBlasterWeapon == null && weaponObject != null)
+            debugBlasterWeapon = weaponObject.GetComponent<DebugBlasterWeapon>();
 
         CacheCombatAnimator();
         SetCombatLayerWeight(0f);
@@ -86,7 +90,6 @@ public class PlayerController : MonoBehaviour
             return true;
 
         return useKeyboardFallback &&
-               (input == null || !input.HasDrawWeaponAction) &&
                Keyboard.current != null &&
                Keyboard.current[drawWeaponKey].wasPressedThisFrame;
     }
@@ -148,6 +151,9 @@ public class PlayerController : MonoBehaviour
         ResetTriggerIfExists(drawWeaponTrigger, hasDrawTrigger);
         ResetTriggerIfExists(sheathWeaponTrigger, hasSheathTrigger);
         SetTriggerIfExists(attackTrigger, hasAttackTrigger);
+
+        if (debugBlasterWeapon != null)
+            debugBlasterWeapon.Fire(cam);
     }
 
     private void CacheCombatAnimator()

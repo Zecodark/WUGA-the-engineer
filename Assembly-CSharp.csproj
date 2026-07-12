@@ -51,40 +51,60 @@
     <Compile Include="Assets\Scripts\Camera\CameraManager.cs" />
     <Compile Include="Assets\Scripts\NPC\SimpleNPCFollow.cs" />
     <Compile Include="Assets\Scripts\Items\GrabInteraction.cs" />
+    <Compile Include="Assets\Cable Script\CableGrabInteraction.cs" />
     <Compile Include="Assets\Asset\vfx\ExplosionVFXPlayer.cs" />
     <Compile Include="Assets\Scripts\OpeningScene\IntroVideoController.cs" />
     <Compile Include="Assets\Scripts\GameOver\GameOver.cs" />
     <Compile Include="Assets\Scripts\Dialogue\dialogAwalScene.cs" />
     <Compile Include="Assets\Scripts\Quest\QuestData.cs" />
+    <Compile Include="Assets\Cable Script\PhysicCableCon.cs" />
     <Compile Include="Assets\Scripts\Items\InventoryManager.cs" />
     <Compile Include="Assets\Scripts\NPC\SimpleBitFollower.cs" />
+    <Compile Include="Assets\Scripts\Combat\PlayerMeleeCombat.cs" />
     <Compile Include="Assets\Scripts\UI\InventoryUI.cs" />
     <Compile Include="Assets\Scripts\UI\QuestUI.cs" />
     <Compile Include="Assets\Scripts\ScriptPortal\PortalLevel1.cs" />
     <Compile Include="Assets\Scripts\Items\ItemData.cs" />
     <Compile Include="Assets\Scripts\Quest\QuestMarker.cs" />
+    <Compile Include="Assets\Level4\script\Level4QuestController.cs" />
     <Compile Include="Assets\Scripts\Quest\QuestGiver.cs" />
     <Compile Include="Assets\Scripts\Camera\BitCutSceneDirector.cs" />
     <Compile Include="Assets\Scripts\Quest\Level1ProgressController.cs" />
+    <Compile Include="Assets\Level4\script\BossHealt.cs" />
     <Compile Include="Assets\Scripts\Dialogue\DialogueState.cs" />
+    <Compile Include="Assets\Cable Script\HInteractions.cs" />
     <Compile Include="Assets\Scripts\Player\PlayerInput.cs" />
     <Compile Include="Assets\Asset\vfx\Scripts\PortalRotate.cs" />
     <Compile Include="Assets\Scripts\UI\InteractionPromptUI.cs" />
+    <Compile Include="Assets\Level4\script\WugaHealt.cs" />
+    <Compile Include="Assets\Cable Script\PhysicCable.cs" />
+    <Compile Include="Assets\Level4\script\Level4QuestItem.cs" />
+    <Compile Include="Assets\Level4\script\DebugBlasterWeapon.cs" />
     <Compile Include="Assets\Scripts\Player\PlayerMovement.cs" />
+    <Compile Include="Assets\Scripts\Enemy\WormyLaneAttacker.cs" />
     <Compile Include="Assets\Asset\vfx\VFXPreviewAutoPlayer.cs" />
     <Compile Include="Assets\Scripts\Dialogue\DialogueSystem.cs" />
     <Compile Include="Assets\Scripts\Dialogue\DialogueData.cs" />
     <Compile Include="Assets\Scripts\Quest\Level1IntroSequenceController.cs" />
+    <Compile Include="Assets\Cable Script\CableQuestController.cs" />
     <Compile Include="Assets\Scripts\Player\PlayerController.cs" />
+    <Compile Include="Assets\Scripts\Combat\PlayerHealth.cs" />
+    <Compile Include="Assets\Level4\script\BossProjectiel.cs" />
     <Compile Include="Assets\Scripts\Items\QuestItemManager.cs" />
     <Compile Include="Assets\Scripts\Player\CarrySystem.cs" />
     <Compile Include="Assets\Scripts\UI\DialogueUI.cs" />
     <Compile Include="Assets\Scripts\SceneManager\SceneManagerButton.cs" />
     <Compile Include="Assets\Settings\TutorialInfo\Scripts\Readme.cs" />
     <Compile Include="Assets\Scripts\Items\TableSocket.cs" />
+    <Compile Include="Assets\Level4\script\Level4DialogSceneController.cs" />
+    <Compile Include="Assets\Level4\script\DebugBlasterProjectile.cs" />
+    <Compile Include="Assets\Level4\script\Level4QuestTableDropZone.cs" />
     <Compile Include="Assets\Scripts\System\GameManager.cs" />
+    <Compile Include="Assets\Level4\script\Level4QuestSocket.cs" />
     <Compile Include="Assets\Scripts\ScriptPortal\PortalFinishTrigger.cs" />
     <Compile Include="Assets\Scripts\Quest\QuestManager.cs" />
+    <Compile Include="Assets\Cable Script\Connector.cs" />
+    <Compile Include="Assets\Level4\script\BossAttackControl.cs" />
     <Compile Include="Assets\Scripts\Items\PlaceInteraction.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -1210,6 +1230,10 @@
       <HintPath>Library\ScriptAssemblies\Unity.TextMeshPro.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="NaughtyAttributes.Core">
+      <HintPath>Library\ScriptAssemblies\NaughtyAttributes.Core.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="Unity.Rendering.LightTransport.Editor">
       <HintPath>Library\ScriptAssemblies\Unity.Rendering.LightTransport.Editor.dll</HintPath>
       <Private>False</Private>
@@ -1274,6 +1298,10 @@
       <HintPath>Library\ScriptAssemblies\Unity.PlasticSCM.Editor.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="NaughtyAttributes.Test">
+      <HintPath>Library\ScriptAssemblies\NaughtyAttributes.Test.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="Unity.Burst.Editor">
       <HintPath>Library\ScriptAssemblies\Unity.Burst.Editor.dll</HintPath>
       <Private>False</Private>
@@ -1306,8 +1334,8 @@
       <HintPath>Library\ScriptAssemblies\Unity.AI.Navigation.Editor.ConversionSystem.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="Unity.RenderPipelines.ShaderGraph.ShaderGraphLibrary">
-      <HintPath>Library\ScriptAssemblies\Unity.RenderPipelines.ShaderGraph.ShaderGraphLibrary.dll</HintPath>
+    <Reference Include="NaughtyAttributes.Editor">
+      <HintPath>Library\ScriptAssemblies\NaughtyAttributes.Editor.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="MCPForUnity.Runtime">
@@ -1328,6 +1356,10 @@
     </Reference>
     <Reference Include="Unity.TextMeshPro.Editor">
       <HintPath>Library\ScriptAssemblies\Unity.TextMeshPro.Editor.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Unity.RenderPipelines.ShaderGraph.ShaderGraphLibrary">
+      <HintPath>Library\ScriptAssemblies\Unity.RenderPipelines.ShaderGraph.ShaderGraphLibrary.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Unity.VisualScripting.Flow.Editor">
