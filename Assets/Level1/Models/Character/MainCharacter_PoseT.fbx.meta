@@ -252,7 +252,7 @@ ModelImporter:
     - name: Area
       parentName: MainCharacter_PoseT(Clone)
       position: {x: -7.374155, y: 5.602561, z: 3.0809522}
-      rotation: {x: 0.60291827, y: 0.5092749, z: 0.41506913, w: 0.4525996}
+      rotation: {x: 0.60291827, y: 0.50927484, z: 0.41506913, w: 0.45259956}
       scale: {x: 1, y: 1, z: 0.99999994}
     - name: Area.001
       parentName: MainCharacter_PoseT(Clone)
@@ -302,7 +302,7 @@ ModelImporter:
     - name: spine.003
       parentName: spine.002
       position: {x: -0.0000000022700988, y: 0.4677086, z: -0.00000000849127}
-      rotation: {x: -0.03446185, y: 0.00062135083, z: -0.000095463765, w: 0.9994058}
+      rotation: {x: -0.034461852, y: 0.00062135083, z: -0.00009546377, w: 0.9994058}
       scale: {x: 1, y: 0.99999994, z: 1}
     - name: shoulder.L
       parentName: spine.003
@@ -447,7 +447,7 @@ ModelImporter:
     - name: ORG-spine.003
       parentName: ORG-spine.002
       position: {x: -0.0000000016589183, y: 0.46770906, z: -0.000000019731488}
-      rotation: {x: -0.03758284, y: 0.00055173296, z: -0.0021207067, w: 0.9992911}
+      rotation: {x: -0.037582844, y: 0.00055173296, z: -0.002120707, w: 0.9992911}
       scale: {x: 1, y: 1, z: 1}
     - name: ORG-shoulder.L
       parentName: ORG-spine.003

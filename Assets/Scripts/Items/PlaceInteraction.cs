@@ -1,13 +1,16 @@
 using UnityEngine;
 using System.Collections;
+using System;
 public class PlaceInteraction : MonoBehaviour
 {
+    public static event Action<ItemData> OnItemPlaced;
 
     [SerializeField] private TableSocket TableSocket;
     [SerializeField] private float placeRange = 3f;
     [SerializeField] private InteractionPromptUI promptUI;
 
     private CarrySystem carrySystem;
+    private bool isPlacing;
 
     void Start()
     {
@@ -16,16 +19,13 @@ public class PlaceInteraction : MonoBehaviour
 
     void Update()
     {
-        if (BitCutSceneDirector.Instance != null &&
-            BitCutSceneDirector.Instance.IsCutsceneActive)
+        if (carrySystem == null || !carrySystem.IsCarrying() || isPlacing)
         {
-            if (promptUI != null)
-                promptUI.Hide();
-
+            if(promptUI != null) promptUI.Hide();
             return;
         }
 
-        if (carrySystem == null || !carrySystem.IsCarrying())
+        if (DialogueSystem.Instance != null && DialogueSystem.Instance.IsDialogueActiveOrJustEnded())
         {
             if(promptUI != null) promptUI.Hide();
             return;
@@ -36,13 +36,13 @@ public class PlaceInteraction : MonoBehaviour
         if(promptUI != null)
         {
             if(playerInRange)
-            promptUI.Show("Press G to Place");
+                promptUI.Show("Press G to Place");
             else
-            promptUI.Hide();
+                promptUI.Hide();
         }
 
         if (playerInRange && Input.GetKeyDown(KeyCode.G))
-        PlaceItem();
+            PlaceItem();
     }
 
     bool CheckPlayerProximity()
@@ -57,23 +57,60 @@ public class PlaceInteraction : MonoBehaviour
 
     void PlaceItem()
     {
+        if (isPlacing || TableSocket == null)
+            return;
+
         GameObject currentItem = carrySystem.GetCurrentItem();
         if (currentItem == null) return;
 
-        int socketIndex = TableSocket.GetAvailableSocketIndex();
-        if (socketIndex == -1)
+        GrabInteraction currentGrab = currentItem.GetComponent<GrabInteraction>();
+        ItemData currentItemData =
+            currentGrab != null ? currentGrab.GetItemData() : null;
+
+        if (currentItemData == null)
         {
-            Debug.Log("No Available sockets!");
+            Debug.LogWarning(
+                "[PlaceInteraction] Item yang dibawa tidak memiliki ItemData.",
+                currentItem
+            );
             return;
         }
 
-        // Mulai coroutine untuk smooth place
+        if (currentGrab != null &&
+            Level1ProgressController.Instance != null &&
+            !Level1ProgressController.Instance.CanInteractWith(
+                currentItemData
+            ))
+        {
+            return;
+        }
+
+        int socketIndex =
+            TableSocket.GetSocketIndexForItem(currentItemData);
+
+        if (socketIndex == -1)
+        {
+            Debug.Log(
+                $"Tidak ada socket meja untuk {currentItemData.itemName}.",
+                this
+            );
+            return;
+        }
+
+        isPlacing = true;
         StartCoroutine(SmoothPlace(currentItem, socketIndex));
     }
     
     IEnumerator SmoothPlace(GameObject item, int socketIndex)
     {
         Transform socket = TableSocket.GetSocket(socketIndex);
+
+        if (socket == null)
+        {
+            isPlacing = false;
+            yield break;
+        }
+
         float duration = 0.3f;
         float elapsed = 0f;
 
@@ -99,10 +136,24 @@ public class PlaceInteraction : MonoBehaviour
         GrabInteraction grab = item.GetComponent<GrabInteraction>();
         if (grab != null)
         {
-            QuestManager.Instance.UpdateObjective(ObjectiveType.Grab, grab.GetItemData().itemId, 1);
+            ItemData placedItem = grab.GetItemData();
+
+            grab.MarkPlaced();
+
+            if (QuestManager.Instance != null)
+            {
+                QuestManager.Instance.UpdateObjective(
+                    ObjectiveType.Grab,
+                    placedItem.itemId,
+                    1
+                );
+            }
+
+            OnItemPlaced?.Invoke(placedItem);
         }
 
-        Debug.Log("Placed item on table");
+        isPlacing = false;
+        Debug.Log($"Placed {item.name} on white table.");
 
     }    
 

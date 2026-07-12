@@ -21,11 +21,7 @@ public class QuestItemManager : MonoBehaviour
 
     void OnQuestCompleted(QuestData quest)
     {
-        foreach(var item in allItems)
-        {
-            if(item != null)
-            item.SetActive(false);
-        }
+        // Do nothing. Items should remain visible when the quest completes.
     }
 
     public void SetPreviewVisible(bool visible)

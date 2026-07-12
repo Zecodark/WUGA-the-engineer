@@ -1,46 +1,81 @@
+using System;
 using UnityEngine;
 using UnityEngine.UI;
-using TMPro;
+
+[Serializable]
+public class QuestUIImageEntry
+{
+    [Tooltip("Harus sama dengan Item Id pada quest, misalnya monitor atau keyboard.")]
+    public string itemId;
+
+    [Tooltip("Wadah Image yang menampilkan status item ini.")]
+    public Image imageContainer;
+
+    [Tooltip("Sprite saat item belum selesai.")]
+    public Sprite notCompletedSprite;
+
+    [Tooltip("Sprite saat item sudah selesai.")]
+    public Sprite completedSprite;
+}
 
 public class QuestUI : MonoBehaviour
 {
-    [SerializeField] private GameObject questPanel;
-    [SerializeField] private TextMeshProUGUI questNameText;
-    [SerializeField] private TextMeshProUGUI objectiveText;
+    [Header("Quest Items")]
+    [SerializeField] private QuestUIImageEntry[] items;
 
-    void Start()
+    public void ResetItems()
     {
-        QuestManager.Instance.OnQuestAccepted += ShowQuest;
-        QuestManager.Instance.OnObjectiveUpdated += UpdateObjectives;
-        QuestManager.Instance.OnQuestCompleted += ShowCompleted;
-        questNameText.text = "No Active Quest";
-        objectiveText.text = "";
+        if (items == null)
+            return;
+
+        foreach (QuestUIImageEntry item in items)
+            SetImageState(item, false);
     }
 
-    void ShowQuest(QuestData quest)
+    public void MarkCompleted(string itemId)
     {
-        questPanel.SetActive(true);
-        questNameText.text = quest.questName;
-        UpdateObjectives();
+        if (items == null || string.IsNullOrWhiteSpace(itemId))
+            return;
+
+        string normalizedId = NormalizeItemId(itemId);
+
+        foreach (QuestUIImageEntry item in items)
+        {
+            if (item != null &&
+                NormalizeItemId(item.itemId) == normalizedId)
+            {
+                SetImageState(item, true);
+                return;
+            }
+        }
+
+        Debug.LogWarning(
+            $"[QuestUI] Item Id '{itemId}' tidak ditemukan pada Quest Items.",
+            this
+        );
     }
 
-    void UpdateObjectives()
+    private static string NormalizeItemId(string itemId)
     {
-        QuestData quest = QuestManager.Instance.GetActiveQuest();
-        if (quest == null) return;
+        if (string.IsNullOrWhiteSpace(itemId))
+            return string.Empty;
 
-        string text = "";
-        foreach (var obj in quest.objectives)
-            text += obj.description + ": " + obj.currentAmount + "/" +
-            obj.requiredAmount + "\n";
+        string normalized = itemId.Trim().ToLowerInvariant();
 
-            objectiveText.text = text;
+        return normalized == "power_supply"
+            ? "power_ups"
+            : normalized;
     }
 
-    void ShowCompleted(QuestData quest)
+    private static void SetImageState(
+        QuestUIImageEntry item,
+        bool completed)
     {
-        questNameText.text = "QUEST COMPLETED!";
-        objectiveText.text = "";
-    }
+        if (item == null || item.imageContainer == null)
+            return;
 
+        item.imageContainer.sprite = completed
+            ? item.completedSprite
+            : item.notCompletedSprite;
+    }
 }

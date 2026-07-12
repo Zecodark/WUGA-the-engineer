@@ -9,6 +9,9 @@ EditorBuildSettings:
     path: Assets/Scenes/MenuUtama.unity
     guid: a6a85088f65b59e499ca71e0053aaa64
   - enabled: 1
+    path: Assets/Scenes/PilihLevel.unity
+    guid: b3349b04c9c14744aaa3c17e0aed8184
+  - enabled: 1
     path: Assets/Scenes/IntroLevel1.unity
     guid: d7bf6354800a3d44a9be5e60853d3638
   - enabled: 1

@@ -1,74 +1,118 @@
+using System;
 using UnityEngine;
 
 public class GrabInteraction : MonoBehaviour
 {
+    public static event Action<ItemData> OnItemGrabbed;
+
     [SerializeField] private ItemData itemData;
-    [SerializeField] private float grabRange = 2f;
+    [SerializeField] private float interactionDistance = 3.5f;
     [SerializeField] private GameObject interactionPrompt;
 
-    private bool isGrabbed = false;
+    [Header("Carry Offsets")]
+    [SerializeField] private Vector3 carryPositionOffset = Vector3.zero;
+    [SerializeField] private Vector3 carryRotationOffset = Vector3.zero;
 
+    private bool isGrabbed;
+    private bool isPlaced;
 
-    void Update()
+    public ItemData GetItemData() => itemData;
+
+    private void Update()
     {
-        if (BitCutSceneDirector.Instance != null &&
-            BitCutSceneDirector.Instance.IsCutsceneActive)
-        {
-            if (interactionPrompt != null)
-                interactionPrompt.SetActive(false);
+        if (isGrabbed || isPlaced) return;
 
+        if (DialogueSystem.Instance != null && DialogueSystem.Instance.IsDialogueActiveOrJustEnded())
+            return;
+
+        CarrySystem carrySystem = FindFirstObjectByType<CarrySystem>();
+        if (carrySystem == null || carrySystem.IsCarrying())
+        {
+            if (interactionPrompt != null) interactionPrompt.SetActive(false);
             return;
         }
 
-        if (isGrabbed) return;
-
-        // Cek player dalam range
-        bool playerInRange = CheckPlayerProximity();
-        Debug.Log("Player in range: " + playerInRange);
-
-        // Tampilkan atau sembunyikan prompt
-        if (interactionPrompt != null)
-        interactionPrompt.SetActive(playerInRange);
-        
-        Debug.Log("G Pressed: " + Input.GetKeyDown(KeyCode.G));
-        // Handle input grab
-        if (playerInRange && Input.GetKeyDown(KeyCode.G))
+        PlayerController player = FindFirstObjectByType<PlayerController>();
+        if (player == null || player.IsInputLocked)
         {
-            StartGrab();
+            if (interactionPrompt != null) interactionPrompt.SetActive(false);
+            return;
+        }
+
+        bool playerInRange = CheckPlayerProximity();
+
+        if (interactionPrompt != null)
+            interactionPrompt.SetActive(playerInRange && CanBeGrabbed());
+
+        if (playerInRange && CanBeGrabbed() && Input.GetKeyDown(KeyCode.G))
+        {
+            Grab(carrySystem);
         }
     }
 
-    // Physics.OverlapSphere = cek semua collider dalam radius
     bool CheckPlayerProximity()
     {
         Collider[] colliders = Physics.OverlapSphere(
-            transform.position, // Posisi item
-            grabRange, // Radius
+            transform.position,
+            interactionDistance,
             LayerMask.GetMask("Player")
         );
         return colliders.Length > 0;
     }
-    
-    void StartGrab()
+
+    private void Grab(CarrySystem carrySystem)
     {
-        Debug.Log("Grab Started!");
+        if (!carrySystem.CarryItem(gameObject))
+            return;
+
+        // Terapkan offset khusus item ini agar posisinya pas di tangan (tidak terbalik / mengambang)
+        transform.localPosition = carryPositionOffset;
+        transform.localEulerAngles = carryRotationOffset;
+
         isGrabbed = true;
 
         if (interactionPrompt != null)
-        interactionPrompt.SetActive(false);
+            interactionPrompt.SetActive(false);
 
-        CarrySystem carrySystem = FindFirstObjectByType<CarrySystem>();
-        if (carrySystem != null)
+        if (itemData != null && DialogueSystem.Instance != null)
         {
-            carrySystem.CarryItem(gameObject);
+            DialogueData data = ScriptableObject.CreateInstance<DialogueData>();
+            data.speakerName = "Sistem";
+            
+            string description = string.IsNullOrWhiteSpace(itemData.description) 
+                ? "Bisa ditempatkan di meja." 
+                : itemData.description;
+                
+            data.lines = new string[] { 
+                $"Kamu mengambil {itemData.itemName}.", 
+                description 
+            };
+            
+            PlayerController player = FindFirstObjectByType<PlayerController>();
+            Vector3 pos = player != null ? player.transform.position : transform.position;
+            DialogueSystem.Instance.StartDialogue(data, pos);
         }
 
-
+        OnItemGrabbed?.Invoke(itemData);
     }
 
-    public ItemData GetItemData()
+    private bool CanBeGrabbed()
     {
-        return itemData;
+        if (isGrabbed || isPlaced || itemData == null)
+            return false;
+
+        Level1ProgressController quest = Level1ProgressController.Instance;
+        return quest == null || quest.CanInteractWith(itemData);
     }
 
+    public void MarkPlaced()
+    {
+        isPlaced = true;
+        isGrabbed = false;
+
+        if (interactionPrompt != null)
+            interactionPrompt.SetActive(false);
+
+        enabled = false;
+    }
 }
