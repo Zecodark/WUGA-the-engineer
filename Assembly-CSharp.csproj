@@ -71,6 +71,7 @@
     <Compile Include="Assets\Asset\vfx\Scripts\PortalRotate.cs" />
     <Compile Include="Assets\Scripts\UI\InteractionPromptUI.cs" />
     <Compile Include="Assets\Scripts\Player\PlayerMovement.cs" />
+    <Compile Include="Assets\Asset\vfx\VFXPreviewAutoPlayer.cs" />
     <Compile Include="Assets\Scripts\Dialogue\DialogueSystem.cs" />
     <Compile Include="Assets\Scripts\Dialogue\DialogueData.cs" />
     <Compile Include="Assets\Scripts\Quest\Level1IntroSequenceController.cs" />
