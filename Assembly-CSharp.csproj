@@ -78,6 +78,7 @@
     <Compile Include="Assets\Cable Script\PhysicCable.cs" />
     <Compile Include="Assets\Scripts\Player\PlayerMovement.cs" />
     <Compile Include="Assets\Scripts\Enemy\WormyLaneAttacker.cs" />
+    <Compile Include="Assets\Asset\vfx\VFXPreviewAutoPlayer.cs" />
     <Compile Include="Assets\Scripts\Dialogue\DialogueSystem.cs" />
     <Compile Include="Assets\Scripts\Dialogue\DialogueData.cs" />
     <Compile Include="Assets\Scripts\Quest\Level1IntroSequenceController.cs" />
