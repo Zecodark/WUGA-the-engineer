@@ -71,6 +71,7 @@
     <Compile Include="Assets\Scripts\Camera\BitCutSceneDirector.cs" />
     <Compile Include="Assets\Scripts\Quest\Level1ProgressController.cs" />
     <Compile Include="Assets\Level4\script\BossHealt.cs" />
+    <Compile Include="Assets\Level4\script\KilasInfo.cs" />
     <Compile Include="Assets\Scripts\Dialogue\DialogueState.cs" />
     <Compile Include="Assets\Cable Script\HInteractions.cs" />
     <Compile Include="Assets\Scripts\Player\PlayerInput.cs" />
@@ -78,11 +79,13 @@
     <Compile Include="Assets\Scripts\UI\InteractionPromptUI.cs" />
     <Compile Include="Assets\Level4\script\WugaHealt.cs" />
     <Compile Include="Assets\Cable Script\PhysicCable.cs" />
+    <Compile Include="Assets\Asset\gamepause.cs" />
     <Compile Include="Assets\Level4\script\Level4QuestItem.cs" />
     <Compile Include="Assets\Level4\script\DebugBlasterWeapon.cs" />
     <Compile Include="Assets\Scripts\Player\PlayerMovement.cs" />
     <Compile Include="Assets\Scripts\Enemy\WormyLaneAttacker.cs" />
     <Compile Include="Assets\Asset\vfx\VFXPreviewAutoPlayer.cs" />
+    <Compile Include="Assets\Level4\script\GameKalah.cs" />
     <Compile Include="Assets\Scripts\Dialogue\DialogueSystem.cs" />
     <Compile Include="Assets\Scripts\Dialogue\DialogueData.cs" />
     <Compile Include="Assets\Scripts\Quest\Level1IntroSequenceController.cs" />

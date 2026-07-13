@@ -13,6 +13,7 @@ public class WugaHealt : MonoBehaviour
 
     [Header("Optional")]
     [SerializeField] private Animator animator;
+    [SerializeField] private GameKalah gameKalah;
 
     public int CurrentHealth => currentHealth;
     public int MaxHealth => maxHealth;
@@ -24,6 +25,11 @@ public class WugaHealt : MonoBehaviour
 
         if (healthText == null)
             healthText = FindHealthText("hp_wuga", "WUGA HP");
+
+        if (gameKalah == null)
+            gameKalah = FindFirstObjectByType<GameKalah>(
+                FindObjectsInactive.Include
+            );
 
         UpdateHealthUI();
     }
@@ -110,6 +116,16 @@ public class WugaHealt : MonoBehaviour
 
         if (animator != null)
             animator.SetTrigger("Die");
+
+        if (gameKalah == null)
+            gameKalah = FindFirstObjectByType<GameKalah>(
+                FindObjectsInactive.Include
+            );
+
+        if (gameKalah != null)
+            gameKalah.ShowGameKalah();
+        else
+            Debug.LogWarning("[WugaHealt] GameKalah tidak ditemukan.", this);
 
         Debug.Log("WUGA kalah.");
     }

@@ -54,6 +54,7 @@ public class dialogAwalScene : MonoBehaviour
     [Header("Kunci Gameplay")]
     [SerializeField] private PlayerController playerController;
     [SerializeField] private bool lockCameraInput = true;
+    [SerializeField] private bool freezeGameTimeDuringDialog = true;
 
     [Header("Event Opsional")]
     [SerializeField] private UnityEvent onDialogStarted;
@@ -66,9 +67,11 @@ public class dialogAwalScene : MonoBehaviour
     private bool isActive;
     private bool previousCameraInputState;
     private float inputReadyTime;
+    private float previousTimeScale = 1f;
     private DialogAwalEntry[] activeEntries;
     private DialogPlaybackMode playbackMode;
     private Action runtimeFinishedCallback;
+    private bool timeFrozenByDialog;
 
     public bool IsActive => isActive;
     public int CurrentDialogIndex => currentDialogIndex;
@@ -166,6 +169,8 @@ public class dialogAwalScene : MonoBehaviour
         inputReadyTime = Time.unscaledTime + initialInputDelay;
 
         SetDialogVisible(true);
+        FreezeGameTime();
+
         if (playbackMode == DialogPlaybackMode.Cutscene)
             LockGameplay();
 
@@ -203,6 +208,8 @@ public class dialogAwalScene : MonoBehaviour
 
         if (playbackMode == DialogPlaybackMode.Cutscene)
             UnlockGameplay();
+
+        RestoreGameTime();
 
         onDialogFinished?.Invoke();
 
@@ -299,6 +306,25 @@ public class dialogAwalScene : MonoBehaviour
         }
     }
 
+    private void FreezeGameTime()
+    {
+        if (!freezeGameTimeDuringDialog || timeFrozenByDialog)
+            return;
+
+        previousTimeScale = Time.timeScale;
+        Time.timeScale = 0f;
+        timeFrozenByDialog = true;
+    }
+
+    private void RestoreGameTime()
+    {
+        if (!timeFrozenByDialog)
+            return;
+
+        Time.timeScale = previousTimeScale;
+        timeFrozenByDialog = false;
+    }
+
     private void KeepGameplayLocked()
     {
         if (playerController != null && !playerController.IsInputLocked)
@@ -354,5 +380,7 @@ public class dialogAwalScene : MonoBehaviour
     {
         if (isActive && playbackMode == DialogPlaybackMode.Cutscene)
             UnlockGameplay();
+
+        RestoreGameTime();
     }
 }

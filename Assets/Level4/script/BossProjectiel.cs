@@ -37,7 +37,7 @@ public class BossProjectiel : MonoBehaviour
     private bool useGravity = false;
 
     [SerializeField]
-    private bool followTarget = true;
+    private bool followTarget = false;
 
     [SerializeField, Min(0.1f)]
     private float homingDuration = 1.25f;
@@ -46,7 +46,7 @@ public class BossProjectiel : MonoBehaviour
     private float maxTurnDegreesPerSecond = 85f;
 
     [SerializeField, Min(0f)]
-    private float aimOffsetRadius = 1.8f;
+    private float aimOffsetRadius = 0f;
 
     [SerializeField, Min(0f)]
     private float spawnCollisionGraceTime = 0.6f;
@@ -503,17 +503,7 @@ public class BossProjectiel : MonoBehaviour
 
     private Vector3 CreateAimOffset()
     {
-        if (aimOffsetRadius <= 0f)
-            return Vector3.zero;
-
-        Vector2 randomOffset =
-            Random.insideUnitCircle * aimOffsetRadius;
-
-        return new Vector3(
-            randomOffset.x,
-            Mathf.Abs(randomOffset.y) * 0.25f,
-            randomOffset.y
-        );
+        return Vector3.zero;
     }
 
     private void RotateAlongVelocity()

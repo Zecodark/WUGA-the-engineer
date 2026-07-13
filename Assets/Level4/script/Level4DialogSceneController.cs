@@ -21,6 +21,7 @@ public class Level4DialogSceneController : MonoBehaviour
     [SerializeField] private bool startOnSceneLoad = true;
 
     [Header("After Dialog")]
+    [SerializeField] private KilasInfo kilasInfo;
     [SerializeField] private Level4QuestController questController;
     [SerializeField, HideInInspector] private Level1ProgressController progressController;
     [SerializeField] private SimpleBitFollower companionController;
@@ -77,6 +78,19 @@ public class Level4DialogSceneController : MonoBehaviour
     private void HandleOpeningDialogFinished()
     {
         ResolveReferences();
+
+        if (kilasInfo != null)
+        {
+            kilasInfo.Show(HandleKilasInfoFinished);
+            return;
+        }
+
+        HandleKilasInfoFinished();
+    }
+
+    private void HandleKilasInfoFinished()
+    {
+        ResolveReferences();
         StartBossAttacks();
 
         if (questController != null)
@@ -99,6 +113,9 @@ public class Level4DialogSceneController : MonoBehaviour
 
         if (questController == null)
             questController = FindFirstObjectByType<Level4QuestController>();
+
+        if (kilasInfo == null)
+            kilasInfo = FindFirstObjectByType<KilasInfo>(FindObjectsInactive.Include);
 
         if (companionController == null)
             companionController = FindFirstObjectByType<SimpleBitFollower>();

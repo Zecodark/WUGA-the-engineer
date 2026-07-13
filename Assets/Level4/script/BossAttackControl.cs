@@ -63,7 +63,7 @@ public class BossAttackControl : MonoBehaviour
     private float projectileSpeed = 20f;
 
     [SerializeField, Min(0f)]
-    private float projectileUpwardBias = 0.35f;
+    private float projectileUpwardBias = 0f;
 
     [SerializeField, Min(0f)]
     private float projectileSpawnForwardOffset = 1.1f;
