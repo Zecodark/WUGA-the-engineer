@@ -1,4 +1,6 @@
+using System.Collections;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
 {
@@ -21,12 +23,28 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private bool hideWeaponWhenSheathed = true;
 
     private bool inputLocked;
+    private bool weaponDrawn;
+    private bool hasDrawTrigger;
+    private bool hasSheathTrigger;
+    private bool hasAttackTrigger;
+    private int combatLayerIndex = -1;
+    private float nextAttackTime;
+    private Coroutine sheathRoutine;
 
     public bool IsInputLocked => inputLocked;
+    public bool IsWeaponDrawn => weaponDrawn;
 
-    private void Update()
     private void Awake()
     {
+        if (input == null)
+            input = GetComponent<PlayerInput>();
+
+        if (movement == null)
+            movement = GetComponent<PlayerMovement>();
+
+        if (cam == null && Camera.main != null)
+            cam = Camera.main.transform;
+
         if (animator == null)
             animator = GetComponentInChildren<Animator>();
 
@@ -38,20 +56,29 @@ public class PlayerController : MonoBehaviour
         UpdateWeaponVisibility();
     }
 
-    void Update()
+    private void Update()
     {
         if (inputLocked)
         {
-            movement.Move(Vector2.zero, cam);
+            if (movement != null)
+                movement.Move(Vector2.zero, cam);
+
             return;
         }
 
-        movement.Move(input.moveDirection, cam);
-
-        if (input.JumpTriggered)
+        if (movement != null && input != null)
         {
-            movement.Jump();
+            movement.Move(input.moveDirection, cam);
+
+            if (input.JumpTriggered)
+                movement.Jump();
         }
+
+        if (IsDrawWeaponPressed())
+            ToggleWeapon();
+
+        if (IsAttackPressed())
+            Attack();
     }
 
     public void LockInput()
@@ -155,8 +182,10 @@ public class PlayerController : MonoBehaviour
             return false;
 
         foreach (AnimatorControllerParameter parameter in animator.parameters)
+        {
             if (parameter.name == parameterName)
                 return true;
+        }
 
         return false;
     }
@@ -208,5 +237,4 @@ public class PlayerController : MonoBehaviour
         StopCoroutine(sheathRoutine);
         sheathRoutine = null;
     }
-
 }

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.VFX;
 
 public class BossProjectiel : MonoBehaviour
 {
@@ -28,6 +29,13 @@ public class BossProjectiel : MonoBehaviour
 
     [SerializeField]
     private Color hitEffectColor = new Color(1f, 0.26f, 0.04f, 1f);
+
+    [Tooltip("Prefab VFX yang muncul saat DataBomb mengenai collider WUGA.")]
+    [SerializeField]
+    private GameObject hitVfxPrefab;
+
+    [SerializeField]
+    private bool useFallbackParticleHitEffect = true;
 
     [Header("Projectile")]
     [SerializeField, Min(0.1f)]
@@ -673,6 +681,15 @@ public class BossProjectiel : MonoBehaviour
         if (hitCollider != null)
             effectPosition = hitCollider.bounds.center;
 
+        if (hitVfxPrefab != null)
+        {
+            SpawnHitVfxPrefab(effectPosition, hitCollider);
+            return;
+        }
+
+        if (!useFallbackParticleHitEffect)
+            return;
+
         GameObject effect =
             new GameObject("DataBombHitEffect");
 
@@ -741,6 +758,54 @@ public class BossProjectiel : MonoBehaviour
             effect,
             hitEffectDuration + 0.6f
         );
+    }
+
+    private void SpawnHitVfxPrefab(
+        Vector3 effectPosition,
+        Collider hitCollider)
+    {
+        Quaternion rotation = Quaternion.identity;
+
+        if (hitCollider != null)
+        {
+            Vector3 direction =
+                (effectPosition - transform.position).normalized;
+
+            if (direction.sqrMagnitude > 0.001f)
+                rotation = Quaternion.LookRotation(direction, Vector3.up);
+        }
+
+        GameObject effect =
+            Instantiate(hitVfxPrefab, effectPosition, rotation);
+
+        effect.name = $"{hitVfxPrefab.name}_Hit";
+        effect.SetActive(true);
+
+        foreach (VisualEffect visualEffect
+                 in effect.GetComponentsInChildren<VisualEffect>(true))
+        {
+            if (!visualEffect.gameObject.activeSelf)
+                visualEffect.gameObject.SetActive(true);
+
+            visualEffect.Reinit();
+            visualEffect.Play();
+        }
+
+        foreach (ParticleSystem particleSystem
+                 in effect.GetComponentsInChildren<ParticleSystem>(true))
+        {
+            if (!particleSystem.gameObject.activeSelf)
+                particleSystem.gameObject.SetActive(true);
+
+            particleSystem.Stop(
+                true,
+                ParticleSystemStopBehavior.StopEmittingAndClear
+            );
+
+            particleSystem.Play(true);
+        }
+
+        Destroy(effect, hitEffectDuration + 1.5f);
     }
 
     private bool IsOwnedByProjectileOwner(

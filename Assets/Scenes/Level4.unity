@@ -50643,6 +50643,7 @@ MonoBehaviour:
   jumpHeight: 0.5
   gravity: -9.81
   animator: {fileID: 835907787}
+  moveParameter: move
   turnSmoothTime: 0.1
   cam: {fileID: 330585546}
   turnSmoothVelocity: 0.5
@@ -56398,6 +56399,8 @@ MonoBehaviour:
   hitEffectDuration: 0.45
   hitEffectBurstCount: 34
   hitEffectColor: {r: 1, g: 0.24, b: 0.04, a: 1}
+  hitVfxPrefab: {fileID: 8537436962917041602, guid: 89d33b07df25fbb428ced84e9f49bea2, type: 3}
+  useFallbackParticleHitEffect: 0
   lifetime: 8
   useGravity: 0
   followTarget: 0
