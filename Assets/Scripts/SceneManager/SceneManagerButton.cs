@@ -174,6 +174,7 @@ public class SceneManagerButton : MonoBehaviour
 
     private void BeginLoading()
     {
+        Time.timeScale = 1f;
         isLoading = true;
 
         if (sourceButton != null)
