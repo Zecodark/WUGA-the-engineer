@@ -80,6 +80,7 @@ public class PlayerMovement : MonoBehaviour
 
         Vector3 direction = new Vector3(input.x, 0f, input.y).normalized;
         bool isMoving = direction.sqrMagnitude >= 0.01f;
+        Level2AudioController.SetRunSoundActive(isMoving && isGrounded);
 
         // Speed di-damping biar transisi idle <-> jalan mulus.
         animator.SetFloat("Speed", direction.magnitude, 0.15f, Time.deltaTime);
@@ -122,6 +123,7 @@ public class PlayerMovement : MonoBehaviour
             velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
             jumpCount++;
             animator.SetFloat("JumpCount", jumpCount);
+            Level2AudioController.PlayJumpSound();
 
             if (jumpCount == 1)
             {
@@ -188,5 +190,10 @@ public class PlayerMovement : MonoBehaviour
 
         controller.Move(knockbackVelocity * Time.deltaTime);
         knockbackVelocity = Vector3.MoveTowards(knockbackVelocity, Vector3.zero, 18f * Time.deltaTime);
+    }
+
+    private void OnDisable()
+    {
+        Level2AudioController.SetRunSoundActive(false);
     }
 }
