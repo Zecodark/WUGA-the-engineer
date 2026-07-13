@@ -30,6 +30,10 @@ public class CableQuestController : MonoBehaviour
     [SerializeField] private GameObject portalObject;
     [SerializeField] private bool hidePortalOnStart = true;
 
+    [Header("Audio")]
+    [SerializeField] private AudioClip portalOpenSound;
+    [SerializeField, Range(0f, 1f)] private float portalOpenVolume = 1f;
+
     [Header("Event")]
     [SerializeField] private UnityEngine.Events.UnityEvent onQuestStarted;
     [SerializeField] private UnityEngine.Events.UnityEvent onQuestCompleted;
@@ -159,10 +163,25 @@ public class CableQuestController : MonoBehaviour
     private void FinishQuestCompletion()
     {
         if (portalObject != null)
+        {
             portalObject.SetActive(true);
+            PlayPortalOpenSound();
+        }
 
         onQuestCompleted?.Invoke();
         Debug.Log("[CableQuest] Cable puzzle completed.", this);
+    }
+
+    private void PlayPortalOpenSound()
+    {
+        if (portalOpenSound == null || portalOpenVolume <= 0f)
+            return;
+
+        AudioSource.PlayClipAtPoint(
+            portalOpenSound,
+            portalObject != null ? portalObject.transform.position : transform.position,
+            portalOpenVolume
+        );
     }
 
     private int CountCorrectSockets()
@@ -248,6 +267,11 @@ public class CableQuestController : MonoBehaviour
     private int GetRequiredSocketCount()
     {
         return requiredSockets != null ? requiredSockets.Length : 0;
+    }
+
+    private void OnValidate()
+    {
+        portalOpenVolume = Mathf.Clamp01(portalOpenVolume);
     }
 
     [Serializable]

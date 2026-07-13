@@ -12,6 +12,10 @@ public class PortalLevel1 : MonoBehaviour
     [Tooltip("Trigger pada PortalEffect yang menampilkan panel hasil.")]
     [SerializeField] private PortalFinishTrigger finishTrigger;
 
+    [Header("Audio")]
+    [SerializeField] private AudioClip portalOpenSound;
+    [SerializeField, Range(0f, 1f)] private float portalOpenVolume = 1f;
+
     void Start()
     {
         ResolveFinishTrigger();
@@ -54,6 +58,7 @@ public class PortalLevel1 : MonoBehaviour
         }
 
         portalObject.SetActive(true);
+        PlayPortalOpenSound();
         ResolveFinishTrigger();
         finishTrigger?.SetPortalUnlocked(true);
         Debug.Log("[PortalLevel1] Portal terbuka!", this);
@@ -75,5 +80,22 @@ public class PortalLevel1 : MonoBehaviour
         {
             QuestManager.Instance.OnQuestCompleted -= CheckPortalUnlock;
         }
+    }
+
+    private void PlayPortalOpenSound()
+    {
+        if (portalOpenSound == null || portalOpenVolume <= 0f)
+            return;
+
+        AudioSource.PlayClipAtPoint(
+            portalOpenSound,
+            portalObject != null ? portalObject.transform.position : transform.position,
+            portalOpenVolume
+        );
+    }
+
+    private void OnValidate()
+    {
+        portalOpenVolume = Mathf.Clamp01(portalOpenVolume);
     }
 }

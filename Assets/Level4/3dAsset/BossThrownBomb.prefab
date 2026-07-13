@@ -50,6 +50,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BossProjectiel
   damage: 10
+  explosionSound: {fileID: 8300000, guid: e9140bbefac67ef40b22681d5f4196a5, type: 3}
+  explosionSoundVolume: 1
   lifetime: 6
   useGravity: 1
   followTarget: 1

@@ -21,6 +21,11 @@ public class BossHealt : MonoBehaviour
     [SerializeField] private Animator animator;
     [SerializeField] private string deathTrigger = "Die";
 
+    [Header("Audio")]
+    [SerializeField] private AudioClip bossStunSound;
+    [SerializeField, Range(0f, 1f)] private float bossStunSoundVolume = 1f;
+    [SerializeField] private AudioSource audioSource;
+
     private bool isDead;
     private bool isRecoveringFromStun;
     private Coroutine stunRecoveryRoutine;
@@ -56,6 +61,9 @@ public class BossHealt : MonoBehaviour
 
         if (animator == null)
             animator = GetComponentInParent<Animator>();
+
+        if (audioSource == null)
+            audioSource = GetComponent<AudioSource>();
 
         if (healthText == null)
             healthText = FindHealthText("hp_boss", "BOSS HP");
@@ -118,6 +126,8 @@ public class BossHealt : MonoBehaviour
         currentHealth = 0;
         UpdateHealthUI();
 
+        PlayBossStunSound();
+
         if (attackControl != null)
             attackControl.EnterStun(stunDuration);
 
@@ -149,6 +159,8 @@ public class BossHealt : MonoBehaviour
         if (attackControl != null)
             attackControl.enabled = false;
 
+        PlayBossStunSound();
+
         if (animator != null && HasAnimatorParameter(deathTrigger))
             animator.SetTrigger(deathTrigger);
 
@@ -167,10 +179,29 @@ public class BossHealt : MonoBehaviour
         return false;
     }
 
+    private void PlayBossStunSound()
+    {
+        if (bossStunSound == null || bossStunSoundVolume <= 0f)
+            return;
+
+        if (audioSource != null)
+        {
+            audioSource.PlayOneShot(bossStunSound, bossStunSoundVolume);
+            return;
+        }
+
+        AudioSource.PlayClipAtPoint(
+            bossStunSound,
+            transform.position,
+            bossStunSoundVolume
+        );
+    }
+
     private void OnValidate()
     {
         maxHealth = Mathf.Max(1, maxHealth);
         stunDuration = Mathf.Max(0f, stunDuration);
+        bossStunSoundVolume = Mathf.Clamp01(bossStunSoundVolume);
 
         if (!Application.isPlaying)
             currentHealth = maxHealth;

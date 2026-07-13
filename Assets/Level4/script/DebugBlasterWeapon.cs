@@ -16,6 +16,11 @@ public class DebugBlasterWeapon : MonoBehaviour
     [Header("Owner")]
     [SerializeField] private GameObject owner;
 
+    [Header("Audio")]
+    [SerializeField] private AudioClip fireSound;
+    [SerializeField, Range(0f, 1f)] private float fireSoundVolume = 1f;
+    [SerializeField] private AudioSource audioSource;
+
     private float nextFireTime;
 
     public int ProjectileDamage
@@ -31,6 +36,16 @@ public class DebugBlasterWeapon : MonoBehaviour
 
         if (owner == null)
             owner = GetComponentInParent<PlayerController>()?.gameObject;
+
+        if (audioSource == null)
+            audioSource = GetComponent<AudioSource>();
+
+        if (audioSource == null && fireSound != null)
+        {
+            audioSource = gameObject.AddComponent<AudioSource>();
+            audioSource.playOnAwake = false;
+            audioSource.spatialBlend = 1f;
+        }
     }
 
     private void Update()
@@ -51,6 +66,8 @@ public class DebugBlasterWeapon : MonoBehaviour
         Transform spawnPoint = muzzle != null ? muzzle : transform;
         Vector3 direction = GetAimDirection(cameraTransform, spawnPoint.position);
         GameObject projectile = CreateProjectile(spawnPoint.position, direction);
+
+        PlayFireSound(spawnPoint.position);
 
         DebugBlasterProjectile blasterProjectile = projectile.GetComponent<DebugBlasterProjectile>();
         if (blasterProjectile == null)
@@ -96,11 +113,26 @@ public class DebugBlasterWeapon : MonoBehaviour
         return projectile;
     }
 
+    private void PlayFireSound(Vector3 position)
+    {
+        if (fireSound == null || fireSoundVolume <= 0f)
+            return;
+
+        if (audioSource != null)
+        {
+            audioSource.PlayOneShot(fireSound, fireSoundVolume);
+            return;
+        }
+
+        AudioSource.PlayClipAtPoint(fireSound, position, fireSoundVolume);
+    }
+
     private void OnValidate()
     {
         projectileDamage = Mathf.Max(0, projectileDamage);
         projectileSpeed = Mathf.Max(0.1f, projectileSpeed);
         fireCooldown = Mathf.Max(0.05f, fireCooldown);
         aimDistance = Mathf.Max(1f, aimDistance);
+        fireSoundVolume = Mathf.Clamp01(fireSoundVolume);
     }
 }

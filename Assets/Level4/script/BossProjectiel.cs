@@ -37,6 +37,13 @@ public class BossProjectiel : MonoBehaviour
     [SerializeField]
     private bool useFallbackParticleHitEffect = true;
 
+    [Header("Audio")]
+    [SerializeField]
+    private AudioClip explosionSound;
+
+    [SerializeField, Range(0f, 1f)]
+    private float explosionSoundVolume = 1f;
+
     [Header("Projectile")]
     [SerializeField, Min(0.1f)]
     private float lifetime = 8f;
@@ -604,9 +611,22 @@ public class BossProjectiel : MonoBehaviour
 
         hasHit = true;
 
+        PlayExplosionSound();
         ApplyAreaEffectDamage();
 
         Destroy(gameObject);
+    }
+
+    private void PlayExplosionSound()
+    {
+        if (explosionSound == null || explosionSoundVolume <= 0f)
+            return;
+
+        AudioSource.PlayClipAtPoint(
+            explosionSound,
+            transform.position,
+            explosionSoundVolume
+        );
     }
 
     private void ApplyAreaEffectDamage()
@@ -843,6 +863,9 @@ public class BossProjectiel : MonoBehaviour
 
         hitEffectBurstCount =
             Mathf.Max(1, hitEffectBurstCount);
+
+        explosionSoundVolume =
+            Mathf.Clamp01(explosionSoundVolume);
 
         minHitRadius =
             Mathf.Max(0.05f, minHitRadius);

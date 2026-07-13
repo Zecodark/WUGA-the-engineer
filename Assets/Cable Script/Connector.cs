@@ -34,6 +34,11 @@ namespace HPhysic
         [SerializeField] private ParticleSystem correctSparksParticle;
         [SerializeField] private ParticleSystem sparksParticle;
 
+        [Header("Audio")]
+        [SerializeField] private AudioClip connectionSound;
+        [SerializeField, Range(0f, 1f)] private float connectionSoundVolume = 1f;
+        [SerializeField] private AudioClip incorrectConnectionSound;
+        [SerializeField, Range(0f, 1f)] private float incorrectConnectionSoundVolume = 1f;
 
         private FixedJoint _fixedJoint;
         private readonly List<ColliderPair> _ignoredConnectionCollisions = new();
@@ -84,6 +89,8 @@ namespace HPhysic
 
         private void OnValidate()
         {
+            connectionSoundVolume = Mathf.Clamp01(connectionSoundVolume);
+            incorrectConnectionSoundVolume = Mathf.Clamp01(incorrectConnectionSoundVolume);
             ResolveConnectionPoint();
         }
 
@@ -148,6 +155,7 @@ namespace HPhysic
             ConnectedTo = secondConnector;
 
             PlayConnectionFeedback();
+            PlayConnectionSound();
 
             // disable outline on select
             UpdateInteractableWhenIsConnected();
@@ -258,6 +266,26 @@ namespace HPhysic
                 incorrectSparksC = IncorrectSparks();
                 StartCoroutine(incorrectSparksC);
             }
+        }
+
+        private void PlayConnectionSound()
+        {
+            AudioClip clip = IsConnectedRight
+                ? connectionSound
+                : incorrectConnectionSound;
+
+            float volume = IsConnectedRight
+                ? connectionSoundVolume
+                : incorrectConnectionSoundVolume;
+
+            if (clip == null || volume <= 0f)
+                return;
+
+            AudioSource.PlayClipAtPoint(
+                clip,
+                ConnectionPosition,
+                volume
+            );
         }
 
         private IEnumerator IncorrectSparks()

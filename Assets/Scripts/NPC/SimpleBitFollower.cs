@@ -57,6 +57,12 @@ public class SimpleBitFollower : MonoBehaviour
     [SerializeField, Min(0f)] private float blockedRetargetDelay = 0.2f;
     [SerializeField] private Animator animator;
 
+    [Header("Audio")]
+    [SerializeField] private AudioClip bitEffectSound;
+    [SerializeField, Range(0f, 1f)] private float bitEffectVolume = 0.45f;
+    [SerializeField] private AudioClip characterBitSound;
+    [SerializeField, Range(0f, 1f)] private float characterBitVolume = 0.25f;
+    [SerializeField] private AudioSource characterBitAudioSource;
 
     private bool following;
     private bool hasDestination;
@@ -105,6 +111,8 @@ public class SimpleBitFollower : MonoBehaviour
         {
             ChooseNewDestination();
             ChooseNewRotation();
+            PlayBitEffectSound();
+            StartCharacterBitSound();
         }
 
         Debug.Log(
@@ -120,6 +128,57 @@ public class SimpleBitFollower : MonoBehaviour
         following = false;
         currentSpeed = 0f;
         hasDestination = false;
+        StopCharacterBitSound();
+    }
+
+    private void StartCharacterBitSound()
+    {
+        if (characterBitSound == null || characterBitVolume <= 0f)
+            return;
+
+        if (characterBitAudioSource == null)
+            characterBitAudioSource = GetComponent<AudioSource>();
+
+        if (characterBitAudioSource == null)
+            characterBitAudioSource = gameObject.AddComponent<AudioSource>();
+
+        characterBitAudioSource.clip = characterBitSound;
+        characterBitAudioSource.loop = true;
+        characterBitAudioSource.playOnAwake = false;
+        characterBitAudioSource.spatialBlend = 0f;
+        characterBitAudioSource.volume = characterBitVolume;
+        characterBitAudioSource.dopplerLevel = 0f;
+        characterBitAudioSource.ignoreListenerPause = true;
+
+        if (!characterBitAudioSource.isPlaying)
+            characterBitAudioSource.Play();
+    }
+
+    private void StopCharacterBitSound()
+    {
+        if (characterBitAudioSource != null &&
+            characterBitAudioSource.isPlaying)
+        {
+            characterBitAudioSource.Stop();
+        }
+    }
+
+    private void PlayBitEffectSound()
+    {
+        if (bitEffectSound == null || bitEffectVolume <= 0f)
+            return;
+
+        if (characterBitAudioSource == null)
+            characterBitAudioSource = GetComponent<AudioSource>();
+
+        if (characterBitAudioSource == null)
+            characterBitAudioSource = gameObject.AddComponent<AudioSource>();
+
+        characterBitAudioSource.playOnAwake = false;
+        characterBitAudioSource.spatialBlend = 0f;
+        characterBitAudioSource.dopplerLevel = 0f;
+        characterBitAudioSource.ignoreListenerPause = true;
+        characterBitAudioSource.PlayOneShot(bitEffectSound, bitEffectVolume);
     }
 
     public void SetMovementDistance(float minimum, float maximum)
@@ -587,6 +646,14 @@ public class SimpleBitFollower : MonoBehaviour
             rotationChangeInterval.x,
             rotationChangeInterval.y
         );
+
+        bitEffectVolume = Mathf.Clamp01(bitEffectVolume);
+        characterBitVolume = Mathf.Clamp01(characterBitVolume);
+    }
+
+    private void OnDisable()
+    {
+        StopCharacterBitSound();
     }
 
     private void OnDrawGizmosSelected()

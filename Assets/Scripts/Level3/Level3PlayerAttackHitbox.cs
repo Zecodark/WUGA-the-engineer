@@ -15,6 +15,10 @@ public class Level3PlayerAttackHitbox : MonoBehaviour
     [SerializeField, Min(0f)] private float snakeKnockbackForce = 3.2f;
     [SerializeField] private LayerMask targetLayers = ~0;
 
+    [Header("Audio")]
+    [SerializeField] private AudioClip hitCableTammerSound;
+    [SerializeField, Range(0f, 1f)] private float hitCableTammerVolume = 1f;
+
     private readonly Collider[] hitResults = new Collider[16];
     private readonly Dictionary<Level3LanSnake, float> nextHitTimes = new();
     private float hitStartTime = -1f;
@@ -97,8 +101,21 @@ public class Level3PlayerAttackHitbox : MonoBehaviour
 
             Vector3 knockbackDirection = (snake.transform.position - attackOrigin.position).FlattenedNormalized();
             snake.TakeDamage(damage, knockbackDirection, snakeKnockbackForce);
+            PlayHitCableTammerSound(snake.transform.position);
             nextHitTimes[snake] = Time.time + sameTargetCooldown;
         }
+    }
+
+    private void PlayHitCableTammerSound(Vector3 position)
+    {
+        if (hitCableTammerSound == null || hitCableTammerVolume <= 0f)
+            return;
+
+        AudioSource.PlayClipAtPoint(
+            hitCableTammerSound,
+            position,
+            hitCableTammerVolume
+        );
     }
 
     private bool IsInFront(Vector3 targetPosition)
@@ -119,5 +136,10 @@ public class Level3PlayerAttackHitbox : MonoBehaviour
 
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(origin, range);
+    }
+
+    private void OnValidate()
+    {
+        hitCableTammerVolume = Mathf.Clamp01(hitCableTammerVolume);
     }
 }
