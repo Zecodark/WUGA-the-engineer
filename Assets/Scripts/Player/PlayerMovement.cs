@@ -17,14 +17,6 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private AudioClip runSound;
     [SerializeField, Range(0f, 1f)] private float runSoundVolume = 1f;
     [SerializeField] private AudioSource runAudioSource;
-    [Header("Movement Audio")]
-    [SerializeField] private AudioSource runAudioSource;
-    [SerializeField] private AudioSource jumpAudioSource;
-    [SerializeField] private AudioClip runSound;
-    [SerializeField] private AudioClip jumpSound;
-    [SerializeField, Range(0f, 1f)] private float runVolume = 0.65f;
-    [SerializeField, Range(0f, 1f)] private float jumpVolume = 0.9f;
-
     [Header("Collision Safety")]
     [SerializeField] private bool enableFallRecovery = true;
     [SerializeField] private float fallRecoveryY = 3f;
@@ -75,7 +67,6 @@ public class PlayerMovement : MonoBehaviour
 
         CacheAnimatorParameters();
         SetupRunAudioSource();
-        ConfigureAudioSources();
         RestoreControllerTransform(spawnPosition, spawnRotation);
         lastSafePosition = transform.position;
         hasSafePosition = true;
@@ -156,8 +147,6 @@ public class PlayerMovement : MonoBehaviour
         Vector3 direction = new Vector3(input.x, 0f, input.y).normalized;
         bool isMoving = direction.sqrMagnitude >= 0.01f;
         Level2AudioController.SetRunSoundActive(isMoving && isGrounded);
-
-        UpdateRunAudio(isMoving && isGrounded);
 
         // Speed di-damping biar transisi idle <-> jalan mulus.
         animator.SetFloat("Speed", direction.magnitude, 0.15f, Time.deltaTime);
@@ -351,6 +340,8 @@ public class PlayerMovement : MonoBehaviour
     {
         jumpSoundVolume = Mathf.Clamp01(jumpSoundVolume);
         runSoundVolume = Mathf.Clamp01(runSoundVolume);
+    }
+
     private void RecoverIfBelowMap()
     {
         if (!enableFallRecovery || !hasSafePosition ||
@@ -424,52 +415,4 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    private void ConfigureAudioSources()
-    {
-        if (runAudioSource != null)
-        {
-            runAudioSource.playOnAwake = false;
-            runAudioSource.loop = true;
-            runAudioSource.clip = runSound;
-            runAudioSource.volume = runVolume;
-        }
-
-        if (jumpAudioSource != null)
-        {
-            jumpAudioSource.playOnAwake = false;
-            jumpAudioSource.loop = false;
-            jumpAudioSource.volume = jumpVolume;
-        }
-    }
-
-    private void UpdateRunAudio(bool shouldPlay)
-    {
-        if (runAudioSource == null || runSound == null)
-            return;
-
-        if (shouldPlay)
-        {
-            if (!runAudioSource.isPlaying)
-                runAudioSource.Play();
-        }
-        else if (runAudioSource.isPlaying)
-        {
-            runAudioSource.Stop();
-        }
-    }
-
-    private void PlayJumpSound()
-    {
-        if (jumpAudioSource != null && jumpSound != null)
-            jumpAudioSource.PlayOneShot(jumpSound);
-    }
-
-    private void OnDisable()
-    {
-        if (runAudioSource != null)
-            runAudioSource.Stop();
-    private void OnDisable()
-    {
-        Level2AudioController.SetRunSoundActive(false);
-    }
 }

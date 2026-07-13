@@ -106,7 +106,6 @@ public class dialogAwalScene : MonoBehaviour
         ResolveReferences();
         SetupUiAudioSource();
         BindButtonTapSounds();
-        ConfigureTypingAudio();
         SetDialogVisible(false);
     }
 
@@ -269,8 +268,6 @@ public class dialogAwalScene : MonoBehaviour
     private IEnumerator TypeLine(string line)
     {
         dialogText.text = string.Empty;
-        PlayTypingSound();
-
         for (int i = 0; i < line.Length; i++)
         {
             dialogText.text = line.Substring(0, i + 1);
@@ -279,7 +276,6 @@ public class dialogAwalScene : MonoBehaviour
         }
 
         dialogText.text = line;
-        StopTypingSound();
         isTyping = false;
         typingCoroutine = null;
     }
@@ -299,7 +295,6 @@ public class dialogAwalScene : MonoBehaviour
         }
 
         isTyping = false;
-        StopTypingSound();
     }
 
     private void SetDialogVisible(bool visible)
@@ -421,34 +416,16 @@ public class dialogAwalScene : MonoBehaviour
 
     private void PlayTypeDialogSound(int characterIndex, char character)
     {
-        if (typeDialogSound == null ||
-            typeDialogVolume <= 0f ||
+        AudioClip clip = typeDialogSound != null ? typeDialogSound : typingSound;
+        float volume = typeDialogSound != null ? typeDialogVolume : typingVolume;
+
+        if (clip == null ||
+            volume <= 0f ||
             char.IsWhiteSpace(character) ||
             characterIndex % typeSoundCharacterStep != 0)
-    private void ConfigureTypingAudio()
-    {
-        if (typingAudioSource == null)
             return;
 
-        typingAudioSource.playOnAwake = false;
-        typingAudioSource.loop = true;
-        typingAudioSource.clip = typingSound;
-        typingAudioSource.volume = typingVolume;
-    }
-
-    private void PlayTypingSound()
-    {
-        if (typingAudioSource == null || typingSound == null ||
-            typingAudioSource.isPlaying)
-        {
-            return;
-        }
-
-        if (Time.unscaledTime - lastTypeSoundTime < 0.015f)
-            return;
-
-        lastTypeSoundTime = Time.unscaledTime;
-        PlayUiSound(typeDialogSound, typeDialogVolume);
+        PlayUiSound(clip, volume);
     }
 
     private void PlayUiSound(AudioClip clip, float volume)
@@ -485,13 +462,6 @@ public class dialogAwalScene : MonoBehaviour
         uiAudioSource.spatialBlend = 0f;
         uiAudioSource.dopplerLevel = 0f;
         uiAudioSource.ignoreListenerPause = true;
-        typingAudioSource.Play();
-    }
-
-    private void StopTypingSound()
-    {
-        if (typingAudioSource != null && typingAudioSource.isPlaying)
-            typingAudioSource.Stop();
     }
 
     private void OnDisable()
@@ -502,7 +472,6 @@ public class dialogAwalScene : MonoBehaviour
             UnlockGameplay();
 
         RestoreGameTime();
-        StopTypingSound();
     }
 
     private void OnValidate()
