@@ -7,16 +7,25 @@ public class QuestItemManager : MonoBehaviour
     void Start()
     {
         foreach (var item in allItems)
-        item.SetActive(false);
+        {
+            if (item != null)
+                item.SetActive(false);
+        }
 
-        QuestManager.Instance.OnQuestAccepted += OnQuestAccepted;
-        QuestManager.Instance.OnQuestCompleted += OnQuestCompleted;
+        if (QuestManager.Instance != null)
+        {
+            QuestManager.Instance.OnQuestAccepted += OnQuestAccepted;
+            QuestManager.Instance.OnQuestCompleted += OnQuestCompleted;
+        }
     }
 
     void OnQuestAccepted(QuestData quest)
     {
-        foreach(var item in allItems)
-        item.SetActive(true);
+        foreach (var item in allItems)
+        {
+            if (item != null)
+                item.SetActive(true);
+        }
     }
 
     void OnQuestCompleted(QuestData quest)
@@ -31,6 +40,15 @@ public class QuestItemManager : MonoBehaviour
             if (item != null)
                 item.SetActive(visible);
         }
+    }
+
+    private void OnDestroy()
+    {
+        if (QuestManager.Instance == null)
+            return;
+
+        QuestManager.Instance.OnQuestAccepted -= OnQuestAccepted;
+        QuestManager.Instance.OnQuestCompleted -= OnQuestCompleted;
     }
 
 }
