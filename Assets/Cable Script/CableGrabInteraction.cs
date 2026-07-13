@@ -12,15 +12,26 @@ public class CableGrabInteraction : MonoBehaviour
     [SerializeField] private GameObject interactionPrompt;
 
     private Connector _connector;
+    private PhysicCable ownCable;
     private bool isGrabbed;
 
     private void Awake()
     {
         _connector = GetComponent<Connector>();
+        ownCable = GetComponentInParent<PhysicCable>();
     }
 
     private void Update()
     {
+        if (IsLockedCorrectly())
+        {
+            if (interactionPrompt != null)
+                interactionPrompt.SetActive(false);
+
+            enabled = false;
+            return;
+        }
+
         // Skip kalau dialog aktif
         if (DialogueSystem.Instance != null && DialogueSystem.Instance.IsDialogueActiveOrJustEnded())
             return;
@@ -77,6 +88,12 @@ public class CableGrabInteraction : MonoBehaviour
 
     private void GrabCable(CarrySystem carrySystem)
     {
+        if (IsLockedCorrectly())
+            return;
+
+        if (ownCable != null)
+            ownCable.ReleaseRetraction(transform);
+
         // Jika kabel sedang tercolok, cabut dulu
         if (_connector != null && _connector.IsConnected)
             _connector.Disconnect();
@@ -134,13 +151,13 @@ public class CableGrabInteraction : MonoBehaviour
 
         foreach (Connector socket in FindObjectsByType<Connector>(FindObjectsSortMode.None))
         {
-            if (socket == null || socket == _connector)
+            if (socket == null || socket == _connector || IsOwnCableConnector(socket))
                 continue;
 
             // Harus bisa connect (beda tipe, warna cocok, belum terpakai)
             if (!_connector.CanConnect(socket)) continue;
 
-            float dist = Vector3.Distance(plugPosition, socket.ConnectionPosition);
+            float dist = GetSocketDistance(socket, plugPosition);
             if (dist > socketDetectionRadius)
                 continue;
 
@@ -152,5 +169,44 @@ public class CableGrabInteraction : MonoBehaviour
         }
 
         return bestSocket;
+    }
+
+    private float GetSocketDistance(Connector socket, Vector3 plugPosition)
+    {
+        float bestDistance = Vector3.Distance(plugPosition, socket.ConnectionPosition);
+        bestDistance = Mathf.Min(
+            bestDistance,
+            Vector3.Distance(transform.position, socket.ConnectionPosition)
+        );
+        bestDistance = Mathf.Min(
+            bestDistance,
+            Vector3.Distance(plugPosition, socket.transform.position)
+        );
+
+        foreach (Collider socketCollider in socket.GetComponentsInChildren<Collider>())
+        {
+            Vector3 closestPoint = socketCollider.ClosestPoint(plugPosition);
+            bestDistance = Mathf.Min(
+                bestDistance,
+                Vector3.Distance(plugPosition, closestPoint)
+            );
+        }
+
+        return bestDistance;
+    }
+
+    private bool IsOwnCableConnector(Connector socket)
+    {
+        if (ownCable != null && socket.GetComponentInParent<PhysicCable>() == ownCable)
+            return true;
+
+        return socket.GetComponent<CableGrabInteraction>() != null;
+    }
+
+    private bool IsLockedCorrectly()
+    {
+        return _connector != null &&
+            _connector.IsConnectedRight &&
+            _connector.IsConnectionLocked;
     }
 }

@@ -10,6 +10,12 @@ public class InventoryUI : MonoBehaviour
 
     void Start()
     {
+        if (InventoryManager.Instance == null)
+        {
+            Debug.LogWarning("[InventoryUI] InventoryManager tidak ditemukan di scene.", this);
+            return;
+        }
+
         // Subscribe ke event > Update UI saat inventory berubah
         InventoryManager.Instance.OnInventoryChanged += UpdateUI;
         UpdateUI();
@@ -24,6 +30,9 @@ public class InventoryUI : MonoBehaviour
 
     void UpdateUI()
     {
+        if (InventoryManager.Instance == null || slotParent == null || slotPrefab == null)
+            return;
+
         // Hapus slot lama
         foreach (GameObject slot in slots)
         {

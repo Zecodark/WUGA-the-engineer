@@ -1,10 +1,7 @@
 using UnityEngine;
-using UnityEngine.InputSystem;
-using System.Collections;
 
 public class PlayerController : MonoBehaviour
 {
-
     [SerializeField] private PlayerInput input;
     [SerializeField] private PlayerMovement movement;
     [SerializeField] private Transform cam;
@@ -24,16 +21,10 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private bool hideWeaponWhenSheathed = true;
 
     private bool inputLocked;
-    private bool weaponDrawn;
-    private float nextAttackTime;
-    private int combatLayerIndex = -1;
-    private Coroutine sheathRoutine;
-    private bool hasDrawTrigger;
-    private bool hasSheathTrigger;
-    private bool hasAttackTrigger;
 
     public bool IsInputLocked => inputLocked;
 
+    private void Update()
     private void Awake()
     {
         if (animator == null)
@@ -49,7 +40,6 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-
         if (inputLocked)
         {
             movement.Move(Vector2.zero, cam);
@@ -62,15 +52,7 @@ public class PlayerController : MonoBehaviour
         {
             movement.Jump();
         }
-
-        if (IsDrawWeaponPressed())
-            ToggleWeapon();
-
-        if (IsAttackPressed())
-            Attack();
     }
-
-    
 
     public void LockInput()
     {
