@@ -19,7 +19,9 @@ public class QuestManager : MonoBehaviour
     {
         if (Instance != null && Instance != this)
         {
-            Destroy(gameObject);
+            // Jangan hapus seluruh GameObject: scene controller lain dapat
+            // ditempatkan pada object yang sama dengan QuestManager.
+            Destroy(this);
             return;
         }
         Instance = this;

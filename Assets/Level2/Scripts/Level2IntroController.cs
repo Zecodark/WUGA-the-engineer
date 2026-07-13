@@ -3,6 +3,7 @@ using UnityEngine;
 public class Level2IntroController : MonoBehaviour
 {
     [SerializeField] private dialogAwalScene openingDialog;
+    [SerializeField] private KilasInfo kilasInfo;
     [SerializeField] private Level2QuestController progressController;
     [SerializeField] private SimpleBitFollower companionController;
     [SerializeField] private bool startOnSceneLoad = true;
@@ -11,6 +12,7 @@ public class Level2IntroController : MonoBehaviour
     private void Awake()
     {
         openingDialog ??= FindFirstObjectByType<dialogAwalScene>();
+        kilasInfo ??= FindFirstObjectByType<KilasInfo>(FindObjectsInactive.Include);
         progressController ??= FindFirstObjectByType<Level2QuestController>();
         companionController ??= FindFirstObjectByType<SimpleBitFollower>();
     }
@@ -29,9 +31,20 @@ public class Level2IntroController : MonoBehaviour
         companionController?.StopFollowing();
 
         if (openingDialog != null)
-            openingDialog.BeginDialog(StartQuest);
+            openingDialog.BeginDialog(ShowKilasInfo);
         else
-            StartQuest();
+            ShowKilasInfo();
+    }
+
+    private void ShowKilasInfo()
+    {
+        if (kilasInfo != null)
+        {
+            kilasInfo.Show(StartQuest);
+            return;
+        }
+
+        StartQuest();
     }
 
     private void StartQuest()

@@ -13,6 +13,7 @@ public class Level3DialogSequenceController : MonoBehaviour
 
     [Header("References")]
     [SerializeField] private dialogAwalScene canvasDialog;
+    [SerializeField] private KilasInfo kilasInfo;
     [SerializeField] private CableQuestController cableQuestController;
     [SerializeField] private SimpleBitFollower bitCompanion;
     [SerializeField] private Transform player;
@@ -115,6 +116,17 @@ public class Level3DialogSequenceController : MonoBehaviour
     }
 
     private void HandleOpeningFinished()
+    {
+        if (kilasInfo != null)
+        {
+            kilasInfo.Show(CompleteOpeningSequence);
+            return;
+        }
+
+        CompleteOpeningSequence();
+    }
+
+    private void CompleteOpeningSequence()
     {
         openingFinished = true;
 
@@ -283,6 +295,14 @@ public class Level3DialogSequenceController : MonoBehaviour
         {
             canvasDialog =
                 FindFirstObjectByType<dialogAwalScene>(
+                    FindObjectsInactive.Include
+                );
+        }
+
+        if (kilasInfo == null)
+        {
+            kilasInfo =
+                FindFirstObjectByType<KilasInfo>(
                     FindObjectsInactive.Include
                 );
         }

@@ -67,5 +67,5 @@
         "*.sln": "*.csproj",
         "*.slnx": "*.csproj"
     },
-    "dotnet.defaultSolution": "Petualangan IK.slnx"
+    "dotnet.defaultSolution": "WUGA-the-engineer.slnx"
 }
