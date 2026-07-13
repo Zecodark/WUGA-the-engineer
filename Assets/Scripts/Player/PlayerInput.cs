@@ -32,7 +32,18 @@ public class PlayerInput : MonoBehaviour
     {
         moveDirection = moveAction.ReadValue<Vector2>();
         JumpTriggered = jumpAction.WasPressedThisFrame();
-        DrawWeaponTriggered = drawWeaponAction != null && drawWeaponAction.WasPressedThisFrame();
-        AttackTriggered = attackAction != null && attackAction.WasPressedThisFrame();
+        DrawWeaponTriggered =
+            drawWeaponAction != null && drawWeaponAction.WasPressedThisFrame();
+        AttackTriggered =
+            attackAction != null && attackAction.WasPressedThisFrame();
+
+        if (Keyboard.current != null)
+        {
+            DrawWeaponTriggered |= Keyboard.current.digit3Key.wasPressedThisFrame;
+            AttackTriggered |= Keyboard.current.leftCtrlKey.wasPressedThisFrame;
+        }
+
+        if (Mouse.current != null)
+            AttackTriggered |= Mouse.current.leftButton.wasPressedThisFrame;
     }
 }
