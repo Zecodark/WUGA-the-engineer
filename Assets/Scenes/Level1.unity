@@ -21043,6 +21043,8 @@ MonoBehaviour:
   hideResultPanelOnStart: 1
   hideLiveTimerWhenFinished: 1
   pauseGameWhenFinished: 0
+  pauseTimerWhenGameFrozen: 1
+  pauseTimerDuringDialog: 1
 --- !u!1001 &835907785
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -21442,10 +21444,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerMovement
   controller: {fileID: 835907788}
-  speed: 4
+  speed: 3
   jumpHeight: 0.5
   gravity: -9.81
   animator: {fileID: 835907787}
+  moveParameter: move
   turnSmoothTime: 0.1
   cam: {fileID: 330585546}
   turnSmoothVelocity: 0.5
@@ -42013,6 +42016,7 @@ MonoBehaviour:
   initialInputDelay: 0.35
   playerController: {fileID: 1963601857}
   lockCameraInput: 1
+  freezeGameTimeDuringDialog: 1
   onDialogStarted:
     m_PersistentCalls:
       m_Calls: []
@@ -42068,6 +42072,18 @@ MonoBehaviour:
   input: {fileID: 835907790}
   movement: {fileID: 835907789}
   cam: {fileID: 330585546}
+  animator: {fileID: 0}
+  weaponObject: {fileID: 0}
+  debugBlasterWeapon: {fileID: 0}
+  drawWeaponTrigger: drawWeapon
+  sheathWeaponTrigger: sheathWeapon
+  attackTrigger: Attack
+  combatLayerName: Combat Layer
+  useKeyboardFallback: 1
+  drawWeaponKey: 43
+  attackCooldown: 0.45
+  sheathLayerDisableDelay: 2.2
+  hideWeaponWhenSheathed: 1
 --- !u!114 &1963601858
 MonoBehaviour:
   m_ObjectHideFlags: 0
