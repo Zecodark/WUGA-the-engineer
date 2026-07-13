@@ -41974,18 +41974,21 @@ MonoBehaviour:
       sendiri... Aku hanya ingin mencoba, tapi ternyata malah membuat sistem rusak.\u201D"
   - categoryName: Bit
     panelSprite: {fileID: 21300000, guid: aa01268dcf647ce49a9c0a7f842eabf9, type: 3}
-    content: " \u201CTenang dulu WUGA, Kamu terlihat sangat kotor, bersihkan dulu
-      pakaian mu\u201D"
+    content: " \u201CTenang dulu WUGA, Kamu terlihat sangat kotor, Aku akan memberimu
+      Kostum..Taraa..\u201D"
   - categoryName: Wuga
-    panelSprite: {fileID: 21300000, guid: 9e77269a1165c5344886bea1166f0cff, type: 3}
-    content: " \u201CHuftt..Baiklahh..\u201D"
+    panelSprite: {fileID: 21300000, guid: 9487376379fd9334495d9cee2e4a9ec9, type: 3}
+    content: '"Woaww..Kerend Banget Kostumku, Terimakasih Bit"'
+  - categoryName: Bit
+    panelSprite: {fileID: 21300000, guid: 69146c69b723b1e43b0d01afeb87891f, type: 3}
+    content: '"Baiklah sama sama Wuga"'
   - categoryName: Bit
     panelSprite: {fileID: 21300000, guid: 69146c69b723b1e43b0d01afeb87891f, type: 3}
     content: "\u201CKesalahan memang sudah terjadi, tetapi masih bisa diperbaiki.
       Untuk keluar dari dunia digital ini, kamu harus memulihkan sistem dari dalam,
       satu area demi satu area.\u201D"
   - categoryName: Wuga
-    panelSprite: {fileID: 21300000, guid: b4fd27fefbb90ab438482868db9c0ef9, type: 3}
+    panelSprite: {fileID: 21300000, guid: 713aec14f6de0e143ab2e0a8b9fab097, type: 3}
     content: " \u201CBaiklah. Kalau memang ini salahku, aku harus memperbaikinya.
       Apa yang harus kulakukan pertama kali?\u201D"
   - categoryName: Bit
@@ -41994,7 +41997,7 @@ MonoBehaviour:
       utama belum aktif. Kamu harus menemukan dan mengaktifkan kembali monitor, keyboard,
       mouse, CPU, dan power agar sistem awal bisa menyala.\u201D"
   - categoryName: Wuga
-    panelSprite: {fileID: 21300000, guid: 4f0b4aa4bcdf44440a2b54340f13f1f3, type: 3}
+    panelSprite: {fileID: 21300000, guid: 411cb8ba7532e7f40a432b1a0d86256f, type: 3}
     content: " \u201CJadi aku harus memperbaiki perangkat dasar dulu. Kalau semua
       perangkat itu berhasil aktif, apa yang terjadi?\u201D"
   - categoryName: Bit
@@ -42003,7 +42006,7 @@ MonoBehaviour:
       berikutnya akan terbuka. Dari sana, kamu bisa melanjutkan perbaikan ke bagian
       sistem yang lebih dalam.\u201D"
   - categoryName: Wuga
-    panelSprite: {fileID: 21300000, guid: afc85c50f1f44a844bf11078bcecf641, type: 3}
+    panelSprite: {fileID: 21300000, guid: 42c47a9b5ceb37949b881afe3b2124cb, type: 3}
     content: " \u201CBaik. Aku akan memperbaiki semua yang sudah kurusak. Terima
       Kasih BIT\u201D"
   - categoryName: Bit
