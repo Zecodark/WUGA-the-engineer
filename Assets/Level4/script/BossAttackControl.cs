@@ -71,6 +71,13 @@ public class BossAttackControl : MonoBehaviour
     [SerializeField, Min(0f)]
     private float projectileSpawnUpOffset = 0.35f;
 
+    [Header("Audio")]
+    [SerializeField]
+    private AudioClip bombSound;
+
+    [SerializeField, Range(0f, 1f)]
+    private float bombSoundVolume = 1f;
+
     [Header("Animation")]
     [SerializeField]
     private Animator animator;
@@ -517,6 +524,8 @@ public class BossAttackControl : MonoBehaviour
                 spawnRotation
             );
 
+        PlayBombSound(spawnPosition);
+
         projectile.transform.SetParent(
             null,
             true
@@ -554,6 +563,18 @@ public class BossAttackControl : MonoBehaviour
             projectileSpeed,
             attackDamage,
             gameObject
+        );
+    }
+
+    private void PlayBombSound(Vector3 position)
+    {
+        if (bombSound == null || bombSoundVolume <= 0f)
+            return;
+
+        AudioSource.PlayClipAtPoint(
+            bombSound,
+            position,
+            bombSoundVolume
         );
     }
 
@@ -973,6 +994,9 @@ public class BossAttackControl : MonoBehaviour
 
         projectileSpawnUpOffset =
             Mathf.Max(0f, projectileSpawnUpOffset);
+
+        bombSoundVolume =
+            Mathf.Clamp01(bombSoundVolume);
 
         crossFadeDuration =
             Mathf.Max(0f, crossFadeDuration);

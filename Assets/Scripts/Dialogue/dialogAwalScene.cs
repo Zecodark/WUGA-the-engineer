@@ -51,6 +51,13 @@ public class dialogAwalScene : MonoBehaviour
     [Min(0f)]
     [SerializeField] private float initialInputDelay = 0.35f;
 
+    [Header("Audio")]
+    [SerializeField] private AudioClip typeDialogSound;
+    [SerializeField, Range(0f, 1f)] private float typeDialogVolume = 1f;
+    [SerializeField, Min(1)] private int typeSoundCharacterStep = 2;
+    [SerializeField] private AudioClip buttonTapSound;
+    [SerializeField, Range(0f, 1f)] private float buttonTapVolume = 1f;
+    [SerializeField] private AudioSource uiAudioSource;
     [Header("Audio Dialog")]
     [SerializeField] private AudioSource typingAudioSource;
     [SerializeField] private AudioClip typingSound;
@@ -77,6 +84,7 @@ public class dialogAwalScene : MonoBehaviour
     private DialogPlaybackMode playbackMode;
     private Action runtimeFinishedCallback;
     private bool timeFrozenByDialog;
+    private float lastTypeSoundTime;
 
     public bool IsActive => isActive;
     public int CurrentDialogIndex => currentDialogIndex;
@@ -96,6 +104,8 @@ public class dialogAwalScene : MonoBehaviour
     private void Awake()
     {
         ResolveReferences();
+        SetupUiAudioSource();
+        BindButtonTapSounds();
         ConfigureTypingAudio();
         SetDialogVisible(false);
     }
@@ -264,6 +274,7 @@ public class dialogAwalScene : MonoBehaviour
         for (int i = 0; i < line.Length; i++)
         {
             dialogText.text = line.Substring(0, i + 1);
+            PlayTypeDialogSound(i, line[i]);
             yield return new WaitForSecondsRealtime(characterDelay);
         }
 
@@ -387,6 +398,33 @@ public class dialogAwalScene : MonoBehaviour
         }
     }
 
+    private void BindButtonTapSounds()
+    {
+        if (buttonTapSound == null || buttonTapVolume <= 0f)
+            return;
+
+        foreach (Button button in FindObjectsByType<Button>(
+                     FindObjectsInactive.Include,
+                     FindObjectsSortMode.None))
+        {
+            if (button == null)
+                continue;
+
+            button.onClick.AddListener(PlayButtonTapSound);
+        }
+    }
+
+    private void PlayButtonTapSound()
+    {
+        PlayUiSound(buttonTapSound, buttonTapVolume);
+    }
+
+    private void PlayTypeDialogSound(int characterIndex, char character)
+    {
+        if (typeDialogSound == null ||
+            typeDialogVolume <= 0f ||
+            char.IsWhiteSpace(character) ||
+            characterIndex % typeSoundCharacterStep != 0)
     private void ConfigureTypingAudio()
     {
         if (typingAudioSource == null)
@@ -406,6 +444,47 @@ public class dialogAwalScene : MonoBehaviour
             return;
         }
 
+        if (Time.unscaledTime - lastTypeSoundTime < 0.015f)
+            return;
+
+        lastTypeSoundTime = Time.unscaledTime;
+        PlayUiSound(typeDialogSound, typeDialogVolume);
+    }
+
+    private void PlayUiSound(AudioClip clip, float volume)
+    {
+        if (clip == null || volume <= 0f)
+            return;
+
+        if (uiAudioSource == null)
+            SetupUiAudioSource();
+
+        if (uiAudioSource != null)
+        {
+            uiAudioSource.PlayOneShot(clip, volume);
+            return;
+        }
+
+        Vector3 position = Camera.main != null
+            ? Camera.main.transform.position
+            : transform.position;
+
+        AudioSource.PlayClipAtPoint(clip, position, volume);
+    }
+
+    private void SetupUiAudioSource()
+    {
+        if (uiAudioSource == null)
+            uiAudioSource = GetComponent<AudioSource>();
+
+        if (uiAudioSource == null)
+            uiAudioSource = gameObject.AddComponent<AudioSource>();
+
+        uiAudioSource.playOnAwake = false;
+        uiAudioSource.loop = false;
+        uiAudioSource.spatialBlend = 0f;
+        uiAudioSource.dopplerLevel = 0f;
+        uiAudioSource.ignoreListenerPause = true;
         typingAudioSource.Play();
     }
 
@@ -424,5 +503,12 @@ public class dialogAwalScene : MonoBehaviour
 
         RestoreGameTime();
         StopTypingSound();
+    }
+
+    private void OnValidate()
+    {
+        typeDialogVolume = Mathf.Clamp01(typeDialogVolume);
+        buttonTapVolume = Mathf.Clamp01(buttonTapVolume);
+        typeSoundCharacterStep = Mathf.Max(1, typeSoundCharacterStep);
     }
 }

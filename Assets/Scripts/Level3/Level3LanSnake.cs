@@ -47,6 +47,11 @@ public class Level3LanSnake : MonoBehaviour
     [SerializeField] private string moveStateName = "Armature|Snake_Chase_InPlace";
     [SerializeField, Min(0f)] private float animationTransitionTime = 0.12f;
 
+    [Header("Audio")]
+    [SerializeField] private AudioClip moveSound;
+    [SerializeField, Range(0f, 1f)] private float moveSoundVolume = 1f;
+    [SerializeField] private AudioSource moveAudioSource;
+
     private readonly Dictionary<LVL3_HEALTH, float> nextDamageTimes = new();
     private Rigidbody body;
     private Collider snakeCollider;
@@ -87,6 +92,8 @@ public class Level3LanSnake : MonoBehaviour
             animator.applyRootMotion = false;
             animator.cullingMode = AnimatorCullingMode.AlwaysAnimate;
         }
+
+        SetupMoveAudioSource();
 
         guardCenter = transform.position;
         fixedHeight = transform.position.y;
@@ -202,6 +209,7 @@ public class Level3LanSnake : MonoBehaviour
 
         isDead = true;
         PlayMoveAnimation(false, true);
+        StopMoveSound();
         onDeath?.Invoke();
         gameObject.SetActive(false);
     }
@@ -317,6 +325,8 @@ public class Level3LanSnake : MonoBehaviour
 
     private void PlayMoveAnimation(bool moving, bool force = false)
     {
+        UpdateMoveSound(moving);
+
         if (animator == null)
             return;
 
@@ -334,6 +344,68 @@ public class Level3LanSnake : MonoBehaviour
 
         lastMovingAnimation = moving;
         hasMovingAnimation = true;
+    }
+
+    private void SetupMoveAudioSource()
+    {
+        if (moveAudioSource == null)
+            moveAudioSource = GetComponent<AudioSource>();
+
+        if (moveAudioSource == null && moveSound != null)
+            moveAudioSource = gameObject.AddComponent<AudioSource>();
+
+        if (moveAudioSource == null)
+            return;
+
+        moveAudioSource.clip = moveSound;
+        moveAudioSource.loop = true;
+        moveAudioSource.playOnAwake = false;
+        moveAudioSource.spatialBlend = 1f;
+        moveAudioSource.volume = moveSoundVolume;
+    }
+
+    private void UpdateMoveSound(bool moving)
+    {
+        if (moveSound == null || moveSoundVolume <= 0f)
+        {
+            StopMoveSound();
+            return;
+        }
+
+        if (moveAudioSource == null)
+            SetupMoveAudioSource();
+
+        if (moveAudioSource == null)
+            return;
+
+        moveAudioSource.clip = moveSound;
+        moveAudioSource.volume = moveSoundVolume;
+
+        if (moving)
+        {
+            if (!moveAudioSource.isPlaying)
+                moveAudioSource.Play();
+
+            return;
+        }
+
+        StopMoveSound();
+    }
+
+    private void StopMoveSound()
+    {
+        if (moveAudioSource != null && moveAudioSource.isPlaying)
+            moveAudioSource.Stop();
+    }
+
+    private void OnDisable()
+    {
+        StopMoveSound();
+    }
+
+    private void OnValidate()
+    {
+        moveSoundVolume = Mathf.Clamp01(moveSoundVolume);
     }
 
     private void OnDrawGizmosSelected()

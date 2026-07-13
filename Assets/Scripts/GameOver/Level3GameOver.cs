@@ -53,6 +53,10 @@ public class Level3GameOver : MonoBehaviour
     [SerializeField] private string successTitle = "Level 3 Selesai";
     [SerializeField] private string gameOverTitle = "Game Over";
 
+    [Header("Audio")]
+    [SerializeField] private AudioClip taskCompleteSound;
+    [SerializeField, Range(0f, 1f)] private float taskCompleteVolume = 1f;
+
     private float elapsedTime;
     private int completedQuestCount;
     private int totalQuestCount;
@@ -142,6 +146,7 @@ public class Level3GameOver : MonoBehaviour
         UpdateQuestProgress(completed, total);
         UpdateTimeTexts();
         SetStars(CalculateStars(elapsedTime));
+        PlayTaskCompleteSound();
 
         if (resultPanel != null)
             resultPanel.SetActive(true);
@@ -177,6 +182,7 @@ public class Level3GameOver : MonoBehaviour
 
         UpdateTimeTexts();
         SetStars(0);
+        PlayTaskCompleteSound();
 
         if (resultPanel != null)
             resultPanel.SetActive(true);
@@ -308,9 +314,26 @@ public class Level3GameOver : MonoBehaviour
         return $"{minutes:00}:{remainingSeconds:00.00}";
     }
 
+    private void PlayTaskCompleteSound()
+    {
+        if (taskCompleteSound == null || taskCompleteVolume <= 0f)
+            return;
+
+        Vector3 position = Camera.main != null
+            ? Camera.main.transform.position
+            : transform.position;
+
+        AudioSource.PlayClipAtPoint(
+            taskCompleteSound,
+            position,
+            taskCompleteVolume
+        );
+    }
+
     private void OnValidate()
     {
         threeStarMaxTime = Mathf.Max(0f, threeStarMaxTime);
         twoStarMaxTime = Mathf.Max(threeStarMaxTime, twoStarMaxTime);
+        taskCompleteVolume = Mathf.Clamp01(taskCompleteVolume);
     }
 }

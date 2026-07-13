@@ -50229,6 +50229,8 @@ MonoBehaviour:
   pauseGameWhenFinished: 0
   pauseTimerWhenGameFrozen: 1
   pauseTimerDuringDialog: 1
+  taskCompleteSound: {fileID: 8300000, guid: 0a71124179ba1bf448422562e9972098, type: 3}
+  taskCompleteVolume: 1
 --- !u!1001 &835907785
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -50646,6 +50648,11 @@ MonoBehaviour:
   moveParameter: move
   turnSmoothTime: 0.1
   cam: {fileID: 330585546}
+  jumpSound: {fileID: 8300000, guid: 2966a89cac18c684295609c991d59759, type: 3}
+  jumpSoundVolume: 1
+  runSound: {fileID: 8300000, guid: 0465efa3efabe4b409c3d23cce7db6a2, type: 3}
+  runSoundVolume: 1
+  runAudioSource: {fileID: 0}
   turnSmoothVelocity: 0.5
 --- !u!114 &835907790
 MonoBehaviour:
@@ -52026,6 +52033,9 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 4294967295
   owner: {fileID: 1963601853}
+  fireSound: {fileID: 8300000, guid: feb5db1bddc3dd2419b01b2492c2dea7, type: 3}
+  fireSoundVolume: 1
+  audioSource: {fileID: 0}
 --- !u!1 &1077619944
 GameObject:
   m_ObjectHideFlags: 0
@@ -52219,6 +52229,8 @@ MonoBehaviour:
   requiredQuest: {fileID: 11400000, guid: 3ea922cd3c85d5c4980a7cfc56386ade, type: 2}
   portalObject: {fileID: 851562908}
   finishTrigger: {fileID: 851562910}
+  portalOpenSound: {fileID: 8300000, guid: 0e56b4da0ce30ef4ba66b9316dfd1da4, type: 3}
+  portalOpenVolume: 1
 --- !u!114 &1083149691
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -52599,6 +52611,8 @@ MonoBehaviour:
   popupPanel: {fileID: 1111615961}
   hideOnStart: 1
   pauseGameWhenShown: 1
+  taskCompleteSound: {fileID: 8300000, guid: 0a71124179ba1bf448422562e9972098, type: 3}
+  taskCompleteVolume: 1
 --- !u!1 &1114744192
 GameObject:
   m_ObjectHideFlags: 0
@@ -55893,6 +55907,11 @@ MonoBehaviour:
     m_Bits: 1
   blockedRetargetDelay: 0.2
   animator: {fileID: 1457303578}
+  bitEffectSound: {fileID: 8300000, guid: ad143a0103fb40a458c8968010562781, type: 3}
+  bitEffectVolume: 0.35
+  characterBitSound: {fileID: 8300000, guid: bc53b315741fe7642bd770cf6350e744, type: 3}
+  characterBitVolume: 0.2
+  characterBitAudioSource: {fileID: 0}
 --- !u!95 &1457303578 stripped
 Animator:
   m_CorrespondingSourceObject: {fileID: 5866666021909216657, guid: 65b1bb9d11445c64280a0d108e542970, type: 3}
@@ -56416,6 +56435,8 @@ MonoBehaviour:
   hitEffectColor: {r: 1, g: 0.24, b: 0.04, a: 1}
   hitVfxPrefab: {fileID: 8537436962917041602, guid: 89d33b07df25fbb428ced84e9f49bea2, type: 3}
   useFallbackParticleHitEffect: 0
+  explosionSound: {fileID: 8300000, guid: e9140bbefac67ef40b22681d5f4196a5, type: 3}
+  explosionSoundVolume: 1
   lifetime: 8
   useGravity: 0
   followTarget: 0
@@ -58851,6 +58872,9 @@ MonoBehaviour:
   attackControl: {fileID: 1866506675}
   animator: {fileID: 1640730603}
   deathTrigger: Die
+  bossStunSound: {fileID: 8300000, guid: 92294452eb4b77c46b07f5d8918fd88a, type: 3}
+  bossStunSoundVolume: 1
+  audioSource: {fileID: 0}
 --- !u!1 &1649414153
 GameObject:
   m_ObjectHideFlags: 0
@@ -65989,6 +66013,8 @@ MonoBehaviour:
   projectileUpwardBias: 0
   projectileSpawnForwardOffset: 0.6
   projectileSpawnUpOffset: 0.2
+  bombSound: {fileID: 8300000, guid: e9140bbefac67ef40b22681d5f4196a5, type: 3}
+  bombSoundVolume: 1
   animator: {fileID: 1640730603}
   idleStateName: Idle
   attackStateName: Boss_Attack_Throw
@@ -67253,6 +67279,11 @@ MonoBehaviour:
   useTypingEffect: 1
   characterDelay: 0.025
   initialInputDelay: 0.35
+  typeDialogSound: {fileID: 8300000, guid: a8cefcbcfb876de4fbf7d1bab91f9f7c, type: 3}
+  typeDialogVolume: 1
+  typeSoundCharacterStep: 2
+  buttonTapSound: {fileID: 8300000, guid: 4ad75767f43b2f94e82f970433b3c8fd, type: 3}
+  buttonTapVolume: 1
   playerController: {fileID: 1963601857}
   lockCameraInput: 1
   freezeGameTimeDuringDialog: 1

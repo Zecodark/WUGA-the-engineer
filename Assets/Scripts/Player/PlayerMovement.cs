@@ -11,6 +11,12 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] public float turnSmoothTime = .1f;
     public Transform cam;
 
+    [Header("Audio")]
+    [SerializeField] private AudioClip jumpSound;
+    [SerializeField, Range(0f, 1f)] private float jumpSoundVolume = 1f;
+    [SerializeField] private AudioClip runSound;
+    [SerializeField, Range(0f, 1f)] private float runSoundVolume = 1f;
+    [SerializeField] private AudioSource runAudioSource;
     [Header("Movement Audio")]
     [SerializeField] private AudioSource runAudioSource;
     [SerializeField] private AudioSource jumpAudioSource;
@@ -32,7 +38,7 @@ public class PlayerMovement : MonoBehaviour
     private bool isCarrying = false;
 
     // Set true hanya kalau kamu menambahkan kembali parameter "IsRolling" (Bool) di Animator.
-    private static readonly bool HasRollingParam = false;
+    private static bool HasRollingParam => false;
     private bool isRolling = false;
     private bool hasMoveParameter;
     private AnimatorControllerParameterType moveParameterType;
@@ -68,6 +74,7 @@ public class PlayerMovement : MonoBehaviour
         }
 
         CacheAnimatorParameters();
+        SetupRunAudioSource();
         ConfigureAudioSources();
         RestoreControllerTransform(spawnPosition, spawnRotation);
         lastSafePosition = transform.position;
@@ -155,6 +162,7 @@ public class PlayerMovement : MonoBehaviour
         // Speed di-damping biar transisi idle <-> jalan mulus.
         animator.SetFloat("Speed", direction.magnitude, 0.15f, Time.deltaTime);
         SetMoveParameter(isMoving);
+        UpdateRunSound(isMoving && isGrounded);
 
         if (isMoving)
         {
@@ -168,6 +176,7 @@ public class PlayerMovement : MonoBehaviour
         else
         {
             wasMoving = false;
+            UpdateRunSound(false);
         }
 
         ApplyKnockbackMotion();
@@ -211,6 +220,74 @@ public class PlayerMovement : MonoBehaviour
                 animator.CrossFadeInFixedTime("Double Jump", 0.05f, baseLayerIndex);
             }
         }
+    }
+
+    private void SetupRunAudioSource()
+    {
+        if (runAudioSource == null && (runSound != null || jumpSound != null))
+            runAudioSource = gameObject.AddComponent<AudioSource>();
+
+        if (runAudioSource == null)
+            return;
+
+        runAudioSource.clip = runSound;
+        runAudioSource.loop = true;
+        runAudioSource.playOnAwake = false;
+        runAudioSource.spatialBlend = 0f;
+        runAudioSource.volume = runSoundVolume;
+        runAudioSource.dopplerLevel = 0f;
+        runAudioSource.ignoreListenerPause = true;
+    }
+
+    private void UpdateRunSound(bool shouldPlay)
+    {
+        if (runSound == null || runSoundVolume <= 0f)
+        {
+            StopRunSound();
+            return;
+        }
+
+        if (runAudioSource == null)
+            SetupRunAudioSource();
+
+        if (runAudioSource == null)
+            return;
+
+        runAudioSource.clip = runSound;
+        runAudioSource.volume = runSoundVolume;
+
+        if (shouldPlay)
+        {
+            if (!runAudioSource.isPlaying)
+                runAudioSource.Play();
+
+            return;
+        }
+
+        StopRunSound();
+    }
+
+    private void StopRunSound()
+    {
+        if (runAudioSource != null && runAudioSource.isPlaying)
+            runAudioSource.Stop();
+    }
+
+    private void PlayJumpSound()
+    {
+        if (jumpSound == null || jumpSoundVolume <= 0f)
+            return;
+
+        if (runAudioSource == null)
+            SetupRunAudioSource();
+
+        if (runAudioSource != null)
+        {
+            runAudioSource.PlayOneShot(jumpSound, jumpSoundVolume);
+            return;
+        }
+
+        AudioSource.PlayClipAtPoint(jumpSound, transform.position, jumpSoundVolume);
     }
 
     public void SetCarrying(bool carrying)
@@ -265,6 +342,15 @@ public class PlayerMovement : MonoBehaviour
         knockbackVelocity = Vector3.MoveTowards(knockbackVelocity, Vector3.zero, 18f * Time.deltaTime);
     }
 
+    private void OnDisable()
+    {
+        StopRunSound();
+    }
+
+    private void OnValidate()
+    {
+        jumpSoundVolume = Mathf.Clamp01(jumpSoundVolume);
+        runSoundVolume = Mathf.Clamp01(runSoundVolume);
     private void RecoverIfBelowMap()
     {
         if (!enableFallRecovery || !hasSafePosition ||
