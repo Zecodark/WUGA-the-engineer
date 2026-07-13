@@ -50322,8 +50322,8 @@ MonoBehaviour:
   - {fileID: 524493940}
   emptyStarSprite: {fileID: 21300000, guid: 8296a9e3fa189234c87ff4ba479658d3, type: 3}
   activeStarSprite: {fileID: 21300000, guid: 6b2e530f3fddf724c9784ea02c5cf8db, type: 3}
-  threeStarMaxTime: 180
-  twoStarMaxTime: 250
+  threeStarMaxTime: 420
+  twoStarMaxTime: 560
   hideResultPanelOnStart: 1
   hideLiveTimerWhenFinished: 1
   pauseGameWhenFinished: 0

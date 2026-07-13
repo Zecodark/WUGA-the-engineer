@@ -30,9 +30,16 @@ public class PlayerController : MonoBehaviour
     private int combatLayerIndex = -1;
     private float nextAttackTime;
     private Coroutine sheathRoutine;
+    private CombatInputController dedicatedCombatController;
 
     public bool IsInputLocked => inputLocked;
-    public bool IsWeaponDrawn => weaponDrawn;
+    public bool IsWeaponDrawn => UsesDedicatedCombatController
+        ? dedicatedCombatController.IsWeaponDrawn
+        : weaponDrawn;
+
+    private bool UsesDedicatedCombatController =>
+        dedicatedCombatController != null &&
+        dedicatedCombatController.isActiveAndEnabled;
 
     private void Awake()
     {
@@ -51,9 +58,15 @@ public class PlayerController : MonoBehaviour
         if (debugBlasterWeapon == null && weaponObject != null)
             debugBlasterWeapon = weaponObject.GetComponent<DebugBlasterWeapon>();
 
-        CacheCombatAnimator();
-        SetCombatLayerWeight(0f);
-        UpdateWeaponVisibility();
+        dedicatedCombatController =
+            GetComponentInChildren<CombatInputController>(true);
+
+        if (!UsesDedicatedCombatController)
+        {
+            CacheCombatAnimator();
+            SetCombatLayerWeight(0f);
+            UpdateWeaponVisibility();
+        }
     }
 
     private void Update()
@@ -74,11 +87,14 @@ public class PlayerController : MonoBehaviour
                 movement.Jump();
         }
 
-        if (IsDrawWeaponPressed())
-            ToggleWeapon();
+        if (!UsesDedicatedCombatController)
+        {
+            if (IsDrawWeaponPressed())
+                ToggleWeapon();
 
-        if (IsAttackPressed())
-            Attack();
+            if (IsAttackPressed())
+                Attack();
+        }
     }
 
     public void LockInput()
