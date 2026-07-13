@@ -32,12 +32,16 @@ public class GameOver : MonoBehaviour
     [SerializeField] private bool hideResultPanelOnStart = true;
     [SerializeField] private bool hideLiveTimerWhenFinished = true;
     [SerializeField] private bool pauseGameWhenFinished = false;
+    [SerializeField] private bool pauseTimerWhenGameFrozen = true;
+    [SerializeField] private bool pauseTimerDuringDialog = true;
 
     private float elapsedTime;
     private int completedQuestCount;
     private int totalQuestCount;
     private bool timerRunning;
     private bool resultShown;
+    private bool timerPaused;
+    private dialogAwalScene dialogScene;
 
     public float ElapsedTime => elapsedTime;
     public int EarnedStars => CalculateStars(elapsedTime);
@@ -45,6 +49,7 @@ public class GameOver : MonoBehaviour
     private void Awake()
     {
         Time.timeScale = 1f;
+        ResolveReferences();
 
         if (hideResultPanelOnStart && resultPanel != null)
             resultPanel.SetActive(false);
@@ -57,6 +62,9 @@ public class GameOver : MonoBehaviour
     private void Update()
     {
         if (!timerRunning)
+            return;
+
+        if (IsTimerPaused())
             return;
 
         elapsedTime += Time.unscaledDeltaTime;
@@ -82,6 +90,11 @@ public class GameOver : MonoBehaviour
         UpdateTimeTexts();
         UpdateQuestText();
         SetStars(0);
+    }
+
+    public void SetTimerPaused(bool paused)
+    {
+        timerPaused = paused;
     }
 
     public void UpdateQuestProgress(int completed, int total)
@@ -170,6 +183,31 @@ public class GameOver : MonoBehaviour
             questProgressText.text =
                 $"{completedQuestCount}/{totalQuestCount}";
         }
+    }
+
+    private bool IsTimerPaused()
+    {
+        if (timerPaused)
+            return true;
+
+        if (pauseTimerWhenGameFrozen && Time.timeScale <= 0f)
+            return true;
+
+        if (!pauseTimerDuringDialog)
+            return false;
+
+        if (dialogScene == null)
+            ResolveReferences();
+
+        return dialogScene != null && dialogScene.IsActive;
+    }
+
+    private void ResolveReferences()
+    {
+        if (dialogScene == null)
+            dialogScene = FindFirstObjectByType<dialogAwalScene>(
+                FindObjectsInactive.Include
+            );
     }
 
     private static string FormatTime(float seconds)

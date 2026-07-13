@@ -1,10 +1,9 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using System.Collections;
 
 public class PlayerController : MonoBehaviour
 {
-
     [SerializeField] private PlayerInput input;
     [SerializeField] private PlayerMovement movement;
     [SerializeField] private Transform cam;
@@ -12,6 +11,7 @@ public class PlayerController : MonoBehaviour
     [Header("Combat")]
     [SerializeField] private Animator animator;
     [SerializeField] private GameObject weaponObject;
+    [SerializeField] private DebugBlasterWeapon debugBlasterWeapon;
     [SerializeField] private string drawWeaponTrigger = "drawWeapon";
     [SerializeField] private string sheathWeaponTrigger = "sheathWeapon";
     [SerializeField] private string attackTrigger = "Attack";
@@ -24,39 +24,54 @@ public class PlayerController : MonoBehaviour
 
     private bool inputLocked;
     private bool weaponDrawn;
-    private float nextAttackTime;
-    private int combatLayerIndex = -1;
-    private Coroutine sheathRoutine;
     private bool hasDrawTrigger;
     private bool hasSheathTrigger;
     private bool hasAttackTrigger;
+    private int combatLayerIndex = -1;
+    private float nextAttackTime;
+    private Coroutine sheathRoutine;
 
     public bool IsInputLocked => inputLocked;
+    public bool IsWeaponDrawn => weaponDrawn;
 
     private void Awake()
     {
+        if (input == null)
+            input = GetComponent<PlayerInput>();
+
+        if (movement == null)
+            movement = GetComponent<PlayerMovement>();
+
+        if (cam == null && Camera.main != null)
+            cam = Camera.main.transform;
+
         if (animator == null)
             animator = GetComponentInChildren<Animator>();
+
+        if (debugBlasterWeapon == null && weaponObject != null)
+            debugBlasterWeapon = weaponObject.GetComponent<DebugBlasterWeapon>();
 
         CacheCombatAnimator();
         SetCombatLayerWeight(0f);
         UpdateWeaponVisibility();
     }
 
-    void Update()
+    private void Update()
     {
-
         if (inputLocked)
         {
-            movement.Move(Vector2.zero, cam);
+            if (movement != null)
+                movement.Move(Vector2.zero, cam);
+
             return;
         }
 
-        movement.Move(input.moveDirection, cam);
-
-        if (input.JumpTriggered)
+        if (movement != null && input != null)
         {
-            movement.Jump();
+            movement.Move(input.moveDirection, cam);
+
+            if (input.JumpTriggered)
+                movement.Jump();
         }
 
         if (IsDrawWeaponPressed())
@@ -65,8 +80,6 @@ public class PlayerController : MonoBehaviour
         if (IsAttackPressed())
             Attack();
     }
-
-    
 
     public void LockInput()
     {
@@ -86,7 +99,6 @@ public class PlayerController : MonoBehaviour
             return true;
 
         return useKeyboardFallback &&
-               (input == null || !input.HasDrawWeaponAction) &&
                Keyboard.current != null &&
                Keyboard.current[drawWeaponKey].wasPressedThisFrame;
     }
@@ -148,6 +160,9 @@ public class PlayerController : MonoBehaviour
         ResetTriggerIfExists(drawWeaponTrigger, hasDrawTrigger);
         ResetTriggerIfExists(sheathWeaponTrigger, hasSheathTrigger);
         SetTriggerIfExists(attackTrigger, hasAttackTrigger);
+
+        if (debugBlasterWeapon != null)
+            debugBlasterWeapon.Fire(cam);
     }
 
     private void CacheCombatAnimator()
@@ -167,8 +182,10 @@ public class PlayerController : MonoBehaviour
             return false;
 
         foreach (AnimatorControllerParameter parameter in animator.parameters)
+        {
             if (parameter.name == parameterName)
                 return true;
+        }
 
         return false;
     }
@@ -220,5 +237,4 @@ public class PlayerController : MonoBehaviour
         StopCoroutine(sheathRoutine);
         sheathRoutine = null;
     }
-
 }

@@ -1,0 +1,73 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d460290872376524a87f7516191d8b56, type: 3}
+  m_Name: Level4_Quest
+  m_EditorClassIdentifier: Assembly-CSharp::QuestData
+  questId: level4_repair_components
+  questName: Level 4 - Susun Komponen
+  objectives:
+  - description: Pasang Mouse ke socket yang sesuai
+    type: 0
+    targetId: Mouse
+    requiredAmount: 1
+    currentAmount: 0
+  - description: Pasang Unit PC ke socket yang sesuai
+    type: 0
+    targetId: UnitPC
+    requiredAmount: 1
+    currentAmount: 0
+  - description: Pasang Storage ke socket yang sesuai
+    type: 0
+    targetId: Storage
+    requiredAmount: 1
+    currentAmount: 0
+  - description: Pasang Keyboard ke socket yang sesuai
+    type: 0
+    targetId: Keyboard
+    requiredAmount: 1
+    currentAmount: 0
+  - description: Pasang Monitor ke socket yang sesuai
+    type: 0
+    targetId: monitor
+    requiredAmount: 1
+    currentAmount: 0
+  - description: Pasang Motherboard ke socket yang sesuai
+    type: 0
+    targetId: Motherboard
+    requiredAmount: 1
+    currentAmount: 0
+  - description: Pasang Power Supply ke socket yang sesuai
+    type: 0
+    targetId: PowerSupply
+    requiredAmount: 1
+    currentAmount: 0
+  - description: Pasang Power UPS ke socket yang sesuai
+    type: 0
+    targetId: PowerUps
+    requiredAmount: 1
+    currentAmount: 0
+  - description: Pasang Processor ke socket yang sesuai
+    type: 0
+    targetId: Processor
+    requiredAmount: 1
+    currentAmount: 0
+  - description: Pasang RAM ke socket yang sesuai
+    type: 0
+    targetId: Ram
+    requiredAmount: 1
+    currentAmount: 0
+  - description: Pasang VGA ke socket yang sesuai
+    type: 0
+    targetId: Vga
+    requiredAmount: 1
+    currentAmount: 0
+  nextQuest: {fileID: 0}
