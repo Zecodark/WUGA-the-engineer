@@ -52233,13 +52233,27 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Level4DialogSceneController
   openingDialog: {fileID: 1963381033}
   startOnSceneLoad: 1
+  openingStart: 1
+  openingEnd: 6
+  bossAngryStart: 7
+  bossAngryEnd: 7
+  finalStart: 8
+  finalEnd: 13
+  bossAngryRequiredQuestCount: 4
+  finalRequiresAllQuestItems: 1
+  finalBossHealthPercent: 0.25
   kilasInfo: {fileID: 530599633}
   questController: {fileID: 1083149692}
   progressController: {fileID: 0}
   companionController: {fileID: 1457303577}
   startCompanionIfNoProgress: 1
+  bossHealth: {fileID: 0}
   bossAttackControls:
   - {fileID: 1866506675}
+  levelPortal: {fileID: 0}
+  gameOver: {fileID: 0}
+  unlockPortalAfterFinalDialog: 1
+  showResultPanelAfterFinalDialog: 0
   disableLegacyIntroControllers: 1
   disableQuestItemManagers: 1
   disableUnassignedPortalsOnStart: 1
@@ -52322,6 +52336,7 @@ MonoBehaviour:
   manualPlaceKey: 282
   manualPlaceRange: 12
   finalDialog: []
+  finishLevelWhenAllItemsPlaced: 0
   showResultPanelWhenComplete: 0
   onLevelFinished:
     m_PersistentCalls:
@@ -67192,66 +67207,48 @@ MonoBehaviour:
   dialogPanel: {fileID: 2352673}
   dialogText: {fileID: 1210009593}
   dialogEntries:
-  - categoryName: Wuga
-    panelSprite: {fileID: 21300000, guid: 4d5e77f5fbba1f045ad13ea0081bddb1, type: 3}
-    content: " \u201CDi mana ini...? Kenapa lab-nya berubah seperti ini? Meja, komputer,
-      dan lantainya terlihat rusak, tapi ada cahaya digital di mana-mana. Ini bukan
-      lab biasa.\u201D"
   - categoryName: Bit
     panelSprite: {fileID: 21300000, guid: aa01268dcf647ce49a9c0a7f842eabf9, type: 3}
-    content: " \u201CHalo, WUGA. Aku BIT, AI yang pernah kamu buat. Sistemku aktif
-      kembali setelah terjadi kerusakan besar pada salah satu komputer di lab.\u201D"
+    content: 'WUGA, Sekarang kamu berada di area Corrupt Core ! Kamu perlu mengalahkannya! '
   - categoryName: Wuga
-    panelSprite: {fileID: 21300000, guid: 4d5e77f5fbba1f045ad13ea0081bddb1, type: 3}
-    content: " \u201CBIT? Tunggu, kamu hidup? Aku kira kamu cuma program biasa. Sebenarnya
-      aku ada di mana sekarang?\u201D"
+    panelSprite: {fileID: 21300000, guid: d1f61f09361e8bf48990904dc05bdcd2, type: 3}
+    content: Bagaimana caraku mengalahkannya?
   - categoryName: Bit
     panelSprite: {fileID: 21300000, guid: aa01268dcf647ce49a9c0a7f842eabf9, type: 3}
-    content: " \u201CKamu berada di dunia digital. Program yang belum kamu uji membuat
-      sistem menjadi tidak stabil. Salah satu komputer mengalami error besar, lalu
-      menarikmu masuk ke dalam sistem ini.\u201D"
+    content: Ini adalah senjata Debug Blaster ! Tembak Corrupt Core sebanyak lima
+      kali untuk membuatnya stun
   - categoryName: Wuga
-    panelSprite: {fileID: 21300000, guid: 4d5e77f5fbba1f045ad13ea0081bddb1, type: 3}
-    content: " \u201CApa? Dunia digital? Jadi semua ini terjadi karena programku
-      sendiri... Aku hanya ingin mencoba, tapi ternyata malah membuat sistem rusak.\u201D"
+    panelSprite: {fileID: 21300000, guid: d1f61f09361e8bf48990904dc05bdcd2, type: 3}
+    content: "\u201CIni Debug Blaster?\u201D"
   - categoryName: Bit
     panelSprite: {fileID: 21300000, guid: aa01268dcf647ce49a9c0a7f842eabf9, type: 3}
-    content: " \u201CTenang dulu WUGA, Kamu terlihat sangat kotor, bersihkan dulu
-      pakaian mu\u201D"
+    content: "\u201CBenar. Senjata ini digunakan untuk menyerang titik error pada
+      Corrupt Core. Setiap tembakan yang tepat akan melemahkan pertahanannya.\u201D"
   - categoryName: Wuga
-    panelSprite: {fileID: 21300000, guid: 9e77269a1165c5344886bea1166f0cff, type: 3}
-    content: " \u201CHuftt..Baiklahh..\u201D"
+    panelSprite: {fileID: 21300000, guid: 0d3e54d88f5efae47a618098daf39828, type: 3}
+    content: "\u201CBaik. Aku harus cepat sebelum dia bangkit lagi.\u201D"
   - categoryName: Bit
     panelSprite: {fileID: 21300000, guid: 69146c69b723b1e43b0d01afeb87891f, type: 3}
-    content: "\u201CKesalahan memang sudah terjadi, tetapi masih bisa diperbaiki.
-      Untuk keluar dari dunia digital ini, kamu harus memulihkan sistem dari dalam,
-      satu area demi satu area.\u201D"
-  - categoryName: Wuga
-    panelSprite: {fileID: 21300000, guid: b4fd27fefbb90ab438482868db9c0ef9, type: 3}
-    content: " \u201CBaiklah. Kalau memang ini salahku, aku harus memperbaikinya.
-      Apa yang harus kulakukan pertama kali?\u201D"
+    content: AYO WUGA!! BOS SUDAH MENGAMUK!
   - categoryName: Bit
     panelSprite: {fileID: 21300000, guid: 69146c69b723b1e43b0d01afeb87891f, type: 3}
-    content: " \u201CDisini Kita mulai dari Lab Hardware Dasar. Beberapa perangkat
-      utama belum aktif. Kamu harus menemukan dan mengaktifkan kembali monitor, keyboard,
-      mouse, CPU, dan power agar sistem awal bisa menyala.\u201D"
+    content: "\u201CTembak titik intinya sekarang, WUGA!\u201D"
   - categoryName: Wuga
-    panelSprite: {fileID: 21300000, guid: 4f0b4aa4bcdf44440a2b54340f13f1f3, type: 3}
-    content: " \u201CJadi aku harus memperbaiki perangkat dasar dulu. Kalau semua
-      perangkat itu berhasil aktif, apa yang terjadi?\u201D"
+    panelSprite: {fileID: 21300000, guid: 0d3e54d88f5efae47a618098daf39828, type: 3}
+    content: "\u201CIni untuk memperbaiki semua yang sudah rusak!\u201D"
   - categoryName: Bit
     panelSprite: {fileID: 21300000, guid: 69146c69b723b1e43b0d01afeb87891f, type: 3}
-    content: " \u201CJika semua perangkat berhasil dipulihkan, portal menuju area
-      berikutnya akan terbuka. Dari sana, kamu bisa melanjutkan perbaikan ke bagian
-      sistem yang lebih dalam.\u201D"
+    content: "\u201CSerangan berhasil. Corrupt Core runtuh, dan sistem mulai stabil
+      kembali.\u201D"
   - categoryName: Wuga
-    panelSprite: {fileID: 21300000, guid: afc85c50f1f44a844bf11078bcecf641, type: 3}
-    content: " \u201CBaik. Aku akan memperbaiki semua yang sudah kurusak. Terima
-      Kasih BIT\u201D"
+    panelSprite: {fileID: 21300000, guid: b39f76c471edf1f45a648bbe0252fbad, type: 3}
+    content: "\u201CAkhirnya... dunia digital pulih.\u201D"
+  - categoryName: Wuga
+    panelSprite: {fileID: 21300000, guid: b39f76c471edf1f45a648bbe0252fbad, type: 3}
+    content: "\u201CSekarang aku bisa pulang?\u201D"
   - categoryName: Bit
     panelSprite: {fileID: 21300000, guid: 69146c69b723b1e43b0d01afeb87891f, type: 3}
-    content: " \u201CBAGUS..Itu langkah pertama menjadi engineer sejati, WUGA. Sekarang,
-      mari mulai misi pertama.\u201D"
+    content: "\u201CYa. Portal ke dunia nyata sudah terbuka.\u201D"
   playOnStart: 0
   useTypingEffect: 1
   characterDelay: 0.025

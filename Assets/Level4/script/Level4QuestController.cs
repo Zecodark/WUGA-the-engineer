@@ -36,6 +36,7 @@ public class Level4QuestController : MonoBehaviour
 
     [Header("Final")]
     [SerializeField] private DialogAwalEntry[] finalDialog;
+    [SerializeField] private bool finishLevelWhenAllItemsPlaced = false;
     [SerializeField] private bool showResultPanelWhenComplete = true;
     [SerializeField] private UnityEvent onLevelFinished;
 
@@ -49,6 +50,8 @@ public class Level4QuestController : MonoBehaviour
     public bool IsStarted => sequenceStarted;
     public int CompletedCount => completedItemIds.Count;
     public int TotalCount => GetRequiredItemCount();
+    public bool AreAllItemsCompleted =>
+        TotalCount > 0 && CompletedCount >= TotalCount;
 
     private void Awake()
     {
@@ -163,8 +166,11 @@ public class Level4QuestController : MonoBehaviour
         if (gameOver != null)
             gameOver.UpdateQuestProgress(CompletedCount, TotalCount);
 
-        bool allCompleted = CompletedCount >= TotalCount;
-        Action afterDialog = allCompleted ? FinishLevelSequence : null;
+        bool allCompleted = AreAllItemsCompleted;
+        Action afterDialog =
+            allCompleted && finishLevelWhenAllItemsPlaced
+                ? FinishLevelSequence
+                : null;
         DialogAwalEntry[] placeDialog = steps[stepIndex].afterPlaceDialog;
 
         Debug.Log(

@@ -38243,7 +38243,7 @@ MonoBehaviour:
   dialogText: {fileID: 935476044}
   dialogEntries:
   - categoryName: WUGA
-    panelSprite: {fileID: 21300000, guid: 4d5e77f5fbba1f045ad13ea0081bddb1, type: 3}
+    panelSprite: {fileID: 21300000, guid: d1f61f09361e8bf48990904dc05bdcd2, type: 3}
     content: 'WUGA:
 
       Tempat ini penuh kabel dan socket. Tapi... kenapa ada
@@ -38253,39 +38253,39 @@ MonoBehaviour:
     content: Itu LAN Snake. Kabel LAN yang terkena corrupt dan berubah menjadi makhluk
       liar.
   - categoryName: WUGA
-    panelSprite: {fileID: 21300000, guid: 4d5e77f5fbba1f045ad13ea0081bddb1, type: 3}
+    panelSprite: {fileID: 21300000, guid: b39f76c471edf1f45a648bbe0252fbad, type: 3}
     content: Jadi aku harus mengalahkannya?
   - categoryName: BIT
     panelSprite: {fileID: 21300000, guid: aa01268dcf647ce49a9c0a7f842eabf9, type: 3}
     content: Kamu harus memukul LAN Snake agar dapat menarik kabel LAN ke tempatnya.
   - categoryName: WUGA
-    panelSprite: {fileID: 21300000, guid: 4d5e77f5fbba1f045ad13ea0081bddb1, type: 3}
+    panelSprite: {fileID: 21300000, guid: d1f61f09361e8bf48990904dc05bdcd2, type: 3}
     content: Caranya gimana?
   - categoryName: BIT
     panelSprite: {fileID: 21300000, guid: aa01268dcf647ce49a9c0a7f842eabf9, type: 3}
     content: Gunakan senjata Cable Tamer. Senjata ini dapat memukul LAN Snake.
   - categoryName: WUGA
-    panelSprite: {fileID: 21300000, guid: 4d5e77f5fbba1f045ad13ea0081bddb1, type: 3}
+    panelSprite: {fileID: 21300000, guid: b39f76c471edf1f45a648bbe0252fbad, type: 3}
     content: Ini Cable Tamer?
   - categoryName: BIT
     panelSprite: {fileID: 21300000, guid: aa01268dcf647ce49a9c0a7f842eabf9, type: 3}
     content: Benar, Sekarang ayo KALAHKAN!
   - categoryName: WUGA
-    panelSprite: {fileID: 21300000, guid: 4d5e77f5fbba1f045ad13ea0081bddb1, type: 3}
+    panelSprite: {fileID: 21300000, guid: da5b573c18c730a488f3e46b074df2b2, type: 3}
     content: Dia bergerak cepat banget!
   - categoryName: BIT
     panelSprite: {fileID: 21300000, guid: aa01268dcf647ce49a9c0a7f842eabf9, type: 3}
     content: Jangan panik. Perhatikan pola geraknya. Tunggu saat LAN Snake berhenti
       sebentar, lalu gunakan Cable Tamer.
   - categoryName: WUGA
-    panelSprite: {fileID: 21300000, guid: 4d5e77f5fbba1f045ad13ea0081bddb1, type: 3}
+    panelSprite: {fileID: 21300000, guid: 0d3e54d88f5efae47a618098daf39828, type: 3}
     content: Kabel LAN sudah masuk ke socket.
   - categoryName: BIT
     panelSprite: {fileID: 21300000, guid: aa01268dcf647ce49a9c0a7f842eabf9, type: 3}
     content: Benar. Dengan koneksi ini, akses menuju Core System terbuka. Di sana
       sumber error utama berada.
   - categoryName: WUGA
-    panelSprite: {fileID: 21300000, guid: 4d5e77f5fbba1f045ad13ea0081bddb1, type: 3}
+    panelSprite: {fileID: 21300000, guid: 0d3e54d88f5efae47a618098daf39828, type: 3}
     content: Berarti kita sudah dekat dengan penyebab semuanya.
   - categoryName: BIT
     panelSprite: {fileID: 21300000, guid: aa01268dcf647ce49a9c0a7f842eabf9, type: 3}
@@ -38296,6 +38296,7 @@ MonoBehaviour:
   initialInputDelay: 0.35
   playerController: {fileID: 1520093328}
   lockCameraInput: 1
+  freezeGameTimeDuringDialog: 1
   onDialogStarted:
     m_PersistentCalls:
       m_Calls: []
@@ -70266,6 +70267,18 @@ MonoBehaviour:
   input: {fileID: 1747529500}
   movement: {fileID: 1747529498}
   cam: {fileID: 254095743}
+  animator: {fileID: 0}
+  weaponObject: {fileID: 0}
+  debugBlasterWeapon: {fileID: 0}
+  drawWeaponTrigger: drawWeapon
+  sheathWeaponTrigger: sheathWeapon
+  attackTrigger: Attack
+  combatLayerName: Combat Layer
+  useKeyboardFallback: 1
+  drawWeaponKey: 43
+  attackCooldown: 0.45
+  sheathLayerDisableDelay: 2.2
+  hideWeaponWhenSheathed: 1
 --- !u!4 &1520093329
 Transform:
   m_ObjectHideFlags: 0
