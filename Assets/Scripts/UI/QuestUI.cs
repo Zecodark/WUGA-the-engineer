@@ -23,8 +23,27 @@ public class QuestUI : MonoBehaviour
     [Header("Quest Items")]
     [SerializeField] private QuestUIImageEntry[] items;
 
+    private void Awake()
+    {
+        ForcePanelAndItemsActive();
+        ResetItems();
+    }
+
+    private void OnEnable()
+    {
+        ForcePanelAndItemsActive();
+    }
+
+    private void Start()
+    {
+        ForcePanelAndItemsActive();
+        ResetItems();
+    }
+
     public void ResetItems()
     {
+        ForcePanelAndItemsActive();
+
         if (items == null)
             return;
 
@@ -34,6 +53,8 @@ public class QuestUI : MonoBehaviour
 
     public void MarkCompleted(string itemId)
     {
+        ForcePanelAndItemsActive();
+
         if (items == null || string.IsNullOrWhiteSpace(itemId))
             return;
 
@@ -74,8 +95,31 @@ public class QuestUI : MonoBehaviour
         if (item == null || item.imageContainer == null)
             return;
 
+        item.imageContainer.gameObject.SetActive(true);
+        item.imageContainer.enabled = true;
+        Color color = item.imageContainer.color;
+        color.a = 1f;
+        item.imageContainer.color = color;
+
         item.imageContainer.sprite = completed
             ? item.completedSprite
             : item.notCompletedSprite;
+    }
+
+    private void ForcePanelAndItemsActive()
+    {
+        gameObject.SetActive(true);
+
+        if (items == null)
+            return;
+
+        foreach (QuestUIImageEntry item in items)
+        {
+            if (item?.imageContainer == null)
+                continue;
+
+            item.imageContainer.gameObject.SetActive(true);
+            item.imageContainer.enabled = true;
+        }
     }
 }
