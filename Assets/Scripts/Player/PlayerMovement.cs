@@ -148,6 +148,7 @@ public class PlayerMovement : MonoBehaviour
 
         Vector3 direction = new Vector3(input.x, 0f, input.y).normalized;
         bool isMoving = direction.sqrMagnitude >= 0.01f;
+        Level2AudioController.SetRunSoundActive(isMoving && isGrounded);
 
         UpdateRunAudio(isMoving && isGrounded);
 
@@ -195,6 +196,7 @@ public class PlayerMovement : MonoBehaviour
             jumpCount++;
             animator.SetFloat("JumpCount", jumpCount);
             PlayJumpSound();
+            Level2AudioController.PlayJumpSound();
 
             if (jumpCount == 1)
             {
@@ -380,5 +382,8 @@ public class PlayerMovement : MonoBehaviour
     {
         if (runAudioSource != null)
             runAudioSource.Stop();
+    private void OnDisable()
+    {
+        Level2AudioController.SetRunSoundActive(false);
     }
 }

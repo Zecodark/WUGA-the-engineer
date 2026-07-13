@@ -173,6 +173,7 @@ public class dialogAwalScene : MonoBehaviour
         currentDialogIndex = 0;
         isActive = true;
         inputReadyTime = Time.unscaledTime + initialInputDelay;
+        Level2AudioController.SetDialogSoundActive(true);
 
         SetDialogVisible(true);
         FreezeGameTime();
@@ -210,6 +211,7 @@ public class dialogAwalScene : MonoBehaviour
     {
         StopTyping();
         isActive = false;
+        Level2AudioController.SetDialogSoundActive(false);
         SetDialogVisible(false);
 
         if (playbackMode == DialogPlaybackMode.Cutscene)
@@ -415,6 +417,8 @@ public class dialogAwalScene : MonoBehaviour
 
     private void OnDisable()
     {
+        Level2AudioController.SetDialogSoundActive(false);
+
         if (isActive && playbackMode == DialogPlaybackMode.Cutscene)
             UnlockGameplay();
 
