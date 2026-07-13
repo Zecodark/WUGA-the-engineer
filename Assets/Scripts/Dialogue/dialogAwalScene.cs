@@ -58,6 +58,10 @@ public class dialogAwalScene : MonoBehaviour
     [SerializeField] private AudioClip buttonTapSound;
     [SerializeField, Range(0f, 1f)] private float buttonTapVolume = 1f;
     [SerializeField] private AudioSource uiAudioSource;
+    [Header("Audio Dialog")]
+    [SerializeField] private AudioSource typingAudioSource;
+    [SerializeField] private AudioClip typingSound;
+    [SerializeField, Range(0f, 1f)] private float typingVolume = 0.55f;
 
     [Header("Kunci Gameplay")]
     [SerializeField] private PlayerController playerController;
@@ -102,6 +106,7 @@ public class dialogAwalScene : MonoBehaviour
         ResolveReferences();
         SetupUiAudioSource();
         BindButtonTapSounds();
+        ConfigureTypingAudio();
         SetDialogVisible(false);
     }
 
@@ -178,6 +183,7 @@ public class dialogAwalScene : MonoBehaviour
         currentDialogIndex = 0;
         isActive = true;
         inputReadyTime = Time.unscaledTime + initialInputDelay;
+        Level2AudioController.SetDialogSoundActive(true);
 
         SetDialogVisible(true);
         FreezeGameTime();
@@ -215,6 +221,7 @@ public class dialogAwalScene : MonoBehaviour
     {
         StopTyping();
         isActive = false;
+        Level2AudioController.SetDialogSoundActive(false);
         SetDialogVisible(false);
 
         if (playbackMode == DialogPlaybackMode.Cutscene)
@@ -262,6 +269,7 @@ public class dialogAwalScene : MonoBehaviour
     private IEnumerator TypeLine(string line)
     {
         dialogText.text = string.Empty;
+        PlayTypingSound();
 
         for (int i = 0; i < line.Length; i++)
         {
@@ -271,6 +279,7 @@ public class dialogAwalScene : MonoBehaviour
         }
 
         dialogText.text = line;
+        StopTypingSound();
         isTyping = false;
         typingCoroutine = null;
     }
@@ -290,6 +299,7 @@ public class dialogAwalScene : MonoBehaviour
         }
 
         isTyping = false;
+        StopTypingSound();
     }
 
     private void SetDialogVisible(bool visible)
@@ -415,6 +425,21 @@ public class dialogAwalScene : MonoBehaviour
             typeDialogVolume <= 0f ||
             char.IsWhiteSpace(character) ||
             characterIndex % typeSoundCharacterStep != 0)
+    private void ConfigureTypingAudio()
+    {
+        if (typingAudioSource == null)
+            return;
+
+        typingAudioSource.playOnAwake = false;
+        typingAudioSource.loop = true;
+        typingAudioSource.clip = typingSound;
+        typingAudioSource.volume = typingVolume;
+    }
+
+    private void PlayTypingSound()
+    {
+        if (typingAudioSource == null || typingSound == null ||
+            typingAudioSource.isPlaying)
         {
             return;
         }
@@ -460,14 +485,24 @@ public class dialogAwalScene : MonoBehaviour
         uiAudioSource.spatialBlend = 0f;
         uiAudioSource.dopplerLevel = 0f;
         uiAudioSource.ignoreListenerPause = true;
+        typingAudioSource.Play();
+    }
+
+    private void StopTypingSound()
+    {
+        if (typingAudioSource != null && typingAudioSource.isPlaying)
+            typingAudioSource.Stop();
     }
 
     private void OnDisable()
     {
+        Level2AudioController.SetDialogSoundActive(false);
+
         if (isActive && playbackMode == DialogPlaybackMode.Cutscene)
             UnlockGameplay();
 
         RestoreGameTime();
+        StopTypingSound();
     }
 
     private void OnValidate()

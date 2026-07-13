@@ -106,6 +106,7 @@ public class Level2QuestController : MonoBehaviour
         ResetQuestUI();
         gameOver?.StartLevelTimer(ItemIds.Length);
         bitCompanion?.StartFollowing();
+        Level2AudioController.SetBitTarget(bitCompanion?.transform);
         Debug.Log("[Level2Quest] Quest aktif. Dekati komponen tersembunyi dan tekan G.", this);
     }
 
@@ -268,6 +269,7 @@ public class Level2QuestController : MonoBehaviour
         questCompleted = true;
         bitCompanion?.StopFollowing();
 
+        Level2AudioController.PlayTaskCompleteSound();
         ActivatePortal();
 
         Debug.Log("[Level2Quest] Semua komponen selesai. Portal dibuka.", this);
@@ -363,6 +365,8 @@ public class Level2QuestController : MonoBehaviour
                 triggerCollider.enabled = true;
             finishTrigger.SetPortalUnlocked(true);
         }
+
+        Level2AudioController.PlayPortalEffect(portalRoot);
     }
 
     private static void SetPortalChildrenActive(Transform root)

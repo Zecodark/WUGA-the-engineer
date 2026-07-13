@@ -20,10 +20,12 @@ public class gerakWorm : MonoBehaviour
     private Vector3 moveDirection;
     private Rigidbody body;
     private float nextDamageTime;
+    private float lockedHeight;
 
     private void Awake()
     {
         startPosition = transform.position;
+        lockedHeight = startPosition.y;
         PreparePhysics();
         RefreshMoveDirection();
     }
@@ -31,11 +33,12 @@ public class gerakWorm : MonoBehaviour
     private void OnEnable()
     {
         startPosition = transform.position;
+        lockedHeight = startPosition.y;
         nextDamageTime = 0f;
         RefreshMoveDirection();
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
         MoveLinearPingPong();
     }
@@ -46,11 +49,12 @@ public class gerakWorm : MonoBehaviour
             return;
 
         float offset =
-            Mathf.PingPong(Time.time * moveSpeed, moveDistance * 2f) -
+            Mathf.PingPong(Time.fixedTime * moveSpeed, moveDistance * 2f) -
             moveDistance;
 
         Vector3 nextPosition =
             startPosition + moveDirection * offset;
+        nextPosition.y = lockedHeight;
 
         if (body != null)
             body.MovePosition(nextPosition);
@@ -120,6 +124,9 @@ public class gerakWorm : MonoBehaviour
         body.isKinematic = true;
         body.useGravity = false;
         body.interpolation = RigidbodyInterpolation.Interpolate;
+        body.constraints |= RigidbodyConstraints.FreezePositionY |
+                            RigidbodyConstraints.FreezeRotationX |
+                            RigidbodyConstraints.FreezeRotationZ;
 
         Collider wormCollider = GetComponent<Collider>();
         wormCollider.isTrigger = useTriggerCollider;
@@ -132,7 +139,29 @@ public class gerakWorm : MonoBehaviour
                 ? Vector3.forward
                 : localMoveDirection.normalized;
 
-        moveDirection = transform.TransformDirection(direction).normalized;
+        // Model Wormy pada scene diputar pada sumbu X, sehingga local forward
+        // dapat menunjuk ke atas/bawah. Proyeksikan arah ke bidang lantai agar
+        // gerak selalu hanya memakai sumbu dunia X/Z.
+        Vector3 horizontalDirection = transform.TransformDirection(direction);
+        horizontalDirection.y = 0f;
+
+        // Jika local forward tepat vertikal, pakai sumbu lokal lain yang masih
+        // horizontal. Ini mempertahankan orientasi Wormy tanpa pernah mengubah Y.
+        if (horizontalDirection.sqrMagnitude <= 0.0001f)
+        {
+            horizontalDirection = transform.right;
+            horizontalDirection.y = 0f;
+        }
+
+        if (horizontalDirection.sqrMagnitude <= 0.0001f)
+        {
+            horizontalDirection = transform.up;
+            horizontalDirection.y = 0f;
+        }
+
+        moveDirection = horizontalDirection.sqrMagnitude > 0.0001f
+            ? horizontalDirection.normalized
+            : Vector3.forward;
     }
 
     private void OnValidate()
