@@ -6,6 +6,11 @@ public class QuestManager : MonoBehaviour
     private QuestData activeQuest;
     private System.Collections.Generic.List<QuestData> completedQuests = new();
 
+    [Header("Quest Audio")]
+    [SerializeField] private AudioSource questAudioSource;
+    [SerializeField] private AudioClip taskCompleteSound;
+    [SerializeField, Range(0f, 1f)] private float taskCompleteVolume = 0.9f;
+
     public event Action<QuestData> OnQuestAccepted;
     public event Action<QuestData> OnQuestCompleted;
     public event Action OnObjectiveUpdated;
@@ -19,6 +24,13 @@ public class QuestManager : MonoBehaviour
         }
         Instance = this;
         DontDestroyOnLoad(gameObject);
+
+        if (questAudioSource != null)
+        {
+            questAudioSource.playOnAwake = false;
+            questAudioSource.loop = false;
+            questAudioSource.volume = taskCompleteVolume;
+        }
     }
 
     public void AcceptQuest(QuestData quest)
@@ -63,6 +75,7 @@ public class QuestManager : MonoBehaviour
     {
         Debug.Log("[QuestManager] CompleteQuest called: " + activeQuest.questName);
         completedQuests.Add(activeQuest);
+        PlayTaskCompleteSound();
         OnQuestCompleted?.Invoke(activeQuest);
 
         if (activeQuest.nextQuest != null)
@@ -73,6 +86,12 @@ public class QuestManager : MonoBehaviour
 
     public QuestData GetActiveQuest() => activeQuest;
     public bool IsQuestActive() => activeQuest != null;
+
+    private void PlayTaskCompleteSound()
+    {
+        if (questAudioSource != null && taskCompleteSound != null)
+            questAudioSource.PlayOneShot(taskCompleteSound);
+    }
 
     private static string NormalizeTargetId(string targetId)
     {
